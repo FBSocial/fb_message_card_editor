@@ -3,3 +3,4 @@
 .dart_tool/package_config_subset
 .dart_tool/version
 build/*
+.dart_tool/*

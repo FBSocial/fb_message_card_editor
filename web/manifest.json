@@ -1,33 +1,68 @@
 {
-    "name": "fb_message_card_editor",
-    "short_name": "fb_message_card_editor",
+    "name": "消息卡片编辑器",
+    "short_name": "消息卡片编辑器",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "消息卡片编辑器",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
         {
-            "src": "icons/Icon-192.png",
-            "sizes": "192x192",
-            "type": "image/png"
+            "src" : "icons/Icon-App-20x20@1x.png",
+            "type": "image/png",
+            "sizes" : "20x20"
         },
         {
-            "src": "icons/Icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
+            "src" : "icons/Icon-App-20x20@2x.png",
+            "type": "image/png",
+            "sizes" : "40x40"
         },
         {
-            "src": "icons/Icon-maskable-192.png",
-            "sizes": "192x192",
+            "src" : "icons/Icon-App-20x20@3x.png",
+            "type": "image/png",
+            "sizes" : "60x60"
+        },
+        {
+            "src" : "icons/Icon-App-29x29@1x.png",
+            "type": "image/png",
+            "sizes" : "29x29"
+        },
+        {
+            "src" : "icons/Icon-App-29x29@2x.png",
+            "type": "image/png",
+            "sizes" : "58x58"
+        },
+        {
+            "src" : "icons/Icon-App-29x29@3x.png",
+            "type": "image/png",
+            "sizes" : "57x57"
+        },
+        {
+            "src" : "icons/Icon-App-40x40@1x.png",
+            "type": "image/png",
+            "sizes" : "40x40"
+        },
+        {
+            "src" : "icons/Icon-App-40x40@2x.png",
+            "type": "image/png",
+            "sizes" : "80x80"
+        },
+        {
+            "src" : "icons/Icon-App-40x40@3x.png",
+            "type": "image/png",
+            "sizes" : "120x120"
+        },
+        {
+            "src": "icons/Icon-App-83.5x83.5@2x.png",
+            "sizes": "167x167",
             "type": "image/png",
             "purpose": "maskable"
         },
         {
-            "src": "icons/Icon-maskable-512.png",
-            "sizes": "512x512",
+            "src": "icons/Icon-App-1024x1024@1x.png",
+            "sizes": "1024x1024",
             "type": "image/png",
             "purpose": "maskable"
         }
