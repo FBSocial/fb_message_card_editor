@@ -1,0 +1,5 @@
+.dart_tool/dartpad/web_plugin_registrant.dart
+.dart_tool/package_config.json
+.dart_tool/package_config_subset
+.dart_tool/version
+build/*
