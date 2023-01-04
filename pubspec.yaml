@@ -41,6 +41,10 @@ dependencies:
   dynamic_widget:
     git:
       url: https://gitee.com/fanbook/dynamic_widget.git
+
+  dynamic_card:
+    path: ../client/plugins/dynamic_card
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
