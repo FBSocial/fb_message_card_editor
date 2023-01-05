@@ -24,12 +24,12 @@ class DynamicWidget extends StatefulWidget {
 
 class _DynamicWidgetState extends State<DynamicWidget> {
   WidgetNode? _node;
-
+  late Map json;
   final nodeController = NodeController();
 
   @override
   void initState() {
-    final json = widget.json ?? {};
+    json = widget.json ?? {};
     initialNode(json);
     widget.controller?._nodeCallback = getNode;
 
@@ -64,6 +64,10 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   @override
   Widget build(BuildContext context) {
+    if (json != widget.json) {
+      json = widget.json ?? {};
+      initialNode(json);
+    }
     return buildWidget();
   }
 
