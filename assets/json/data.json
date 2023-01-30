@@ -1,0 +1,172 @@
+{
+  "type": "all",
+  "text": "通用",
+  "children": [
+    {
+      "type": "text",
+      "text": "文本",
+      "children": [
+        {
+          "type": "text",
+          "text": "文本",
+          "file": "text.json"
+        },
+        {
+          "type": "标题：内容",
+          "text": "文本",
+          "file": "title.json"
+        },
+        {
+          "type": "tit_text",
+          "text": "标题：内容文字(灰色)",
+          "file": "tit_text2.json"
+        },
+        {
+          "type": "tit_text",
+          "text": "标题：内容文字(灰色)（多行）",
+          "file": "tit_text2.json"
+        },
+        {
+          "type": "mul_text",
+          "text": "标题：内容 组合模块",
+          "file": "mul_text.json"
+        },
+        {
+          "type": "hin_text",
+          "text": "提示文本",
+          "file": "hin_text.json"
+        },
+        {
+          "type": "con_text",
+          "text": "内容一级标题",
+          "file": ".json"
+        },
+        {
+          "type": "con_text",
+          "text": "内容二级标题",
+          "file": "con_text2.json"
+        }
+      ]
+    },
+    {
+      "type": "title",
+      "text": "标题",
+      "children": [
+        {
+          "text": "普通标题",
+          "file": "title.json"
+        },
+        {
+          "text": "图标文字",
+          "file": "ic_title.json"
+        },
+        {
+          "text": "图标文字色块",
+          "file": "ic_bg_tt.json"
+        },
+        {
+          "text": "投票标题",
+          "file": "vo_title.json"
+        }
+      ]
+    },
+    {
+      "type": "image",
+      "text": "图片",
+      "children": [
+        {
+          "text": "图片",
+          "file": "image.json"
+        },
+        {
+          "text": "图片（中号）",
+          "file": "image2.json"
+        },
+        {
+          "text": "图片（大号）",
+          "file": "image3.json"
+        }
+      ]
+    },
+    {
+      "type": "radio",
+      "text": "选择",
+      "children": [
+        {
+          "text": "单选",
+          "file": "radio.json"
+        },
+        {
+          "text": "多选",
+          "file": "checkbox.json"
+        },
+        {
+          "text": "PK/文字样式",
+          "file": "pk_title.json"
+        },
+        {
+          "text": "PK/图片样式",
+          "file": "pk_image.json"
+        },
+        {
+          "text": "投票/文字样式",
+          "file": "vo_text.json"
+        },
+        {
+          "text": "投票/图片样式",
+          "file": "vo_image.json"
+        }
+      ]
+    },
+    {
+      "type": "input",
+      "text": "输入框",
+      "children": [
+        {
+          "text": "输入框",
+          "file": "input.json"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "text": "分割线",
+      "children": [
+        {
+          "text": "分割线",
+          "file": "divider.json"
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "text": "按钮",
+      "children": [
+        {
+          "text": "普通按钮",
+          "file": "button.json"
+        },
+        {
+          "text": "横行双按钮",
+          "file": "button2.json"
+        },
+        {
+          "text": "文字按钮",
+          "file": "button_text.json"
+        },
+        {
+          "text": "文字双按钮",
+          "file": "button_text2.json"
+        },
+        {
+          "text": "文字按钮（不可点击）",
+          "file": "button_text_dis.json"
+        },
+        {
+          "text": "下拉选择框",
+          "file": "dropdown.json"
+        }
+      ]
+    }
+  ]
+}

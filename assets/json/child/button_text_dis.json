@@ -1,0 +1,12 @@
+{
+  "type":"button",
+  "param":{
+    "list":[
+      {
+        "type":2,
+        "text":"你已同意该申请",
+        "enable":1
+      }
+    ]
+  }
+}

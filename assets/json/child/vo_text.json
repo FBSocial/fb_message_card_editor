@@ -1,0 +1,11 @@
+{
+  "type":"vo_text",
+  "param":{
+    "total":20,
+    "ratio":0.3,
+    "type":1,
+    "pre":"",
+    "image":"",
+    "text":"A"
+  }
+}

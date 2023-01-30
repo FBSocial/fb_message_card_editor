@@ -1,0 +1,12 @@
+{
+  "type":"button",
+  "param":{
+    "list":[
+      {
+        "type":1,
+        "text":"按钮一",
+        "enable":1
+      }
+    ]
+  }
+}

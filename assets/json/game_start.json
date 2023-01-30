@@ -1,0 +1,30 @@
+{
+  "type":  "column",
+  "children":  [
+    {"param": {"text": "游戏未开始"}, "type": "title"},
+    {
+      "param":  {
+        "image":  "https://fanbook-gamescluster-1251001060.file.myqcloud.com/tetris-game/5e2a1029-8770-485d-84cd-0f52cbaac027.png",
+        "type":  5
+      },
+      "type":  "image"
+    },
+    {
+      "type":  "button",
+      "param":  {
+        "list":  [
+          {
+            "type":  3,
+            "text":  "我要11",
+            "event":  {
+              "method":  "mini_program",
+              "param":  {
+                "appId":  "https://open.fanbook.mobi/mp/138519745866498048/273383374205222914/v1?a=1669969724423"
+              }
+            }
+          }
+        ]
+      }
+    },
+  ]
+}

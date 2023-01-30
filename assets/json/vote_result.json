@@ -1,0 +1,59 @@
+{
+  "type": "column",
+  "children": [
+    {
+      "type": "vo_title",
+      "param": {
+        "text": "匿名投票",
+        "type": 0,
+        "bg": 0
+      }
+    },
+    {
+      "type": "radio",
+      "param": {
+        "max": 1,
+        "layout": 0,
+        "enable": 1,
+        "list": [
+          {
+            "pre": "A. ",
+            "value": 0,
+            "type": 0,
+            "data": {
+              "text": "哇哈哈"
+            }
+          },
+          {
+            "pre": "B. ",
+            "value": 0,
+            "type": 0,
+            "data": {
+              "text": "奶茶"
+            }
+          },
+          {
+            "pre": "C. ",
+            "value": 0,
+            "type": 0,
+            "data": {
+              "text": "快乐水"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "button",
+      "param": {
+        "list": [
+          {
+            "type": 0,
+            "text": "投票",
+            "enable": 1
+          }
+        ]
+      }
+    }
+  ]
+}

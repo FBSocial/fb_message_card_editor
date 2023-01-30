@@ -1,0 +1,26 @@
+{
+  "type": "masterplate",
+  "text": "模版",
+  "children": [
+    {
+      "type": "circle_update",
+      "file": "circle_update.json",
+      "text": "圈子更新"
+    },
+    {
+      "type": "game_start",
+      "file": "game_start.json",
+      "text": "游戏开始"
+    },
+    {
+      "type": "vote_start",
+      "file": "vote_start.json",
+      "text": "投票"
+    },
+    {
+      "type": "vote_result",
+      "file": "vote_result.json",
+      "text": "投票结果"
+    }
+  ]
+}

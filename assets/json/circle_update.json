@@ -1,0 +1,38 @@
+{
+  "type": "column",
+  "children": [
+    {
+      "type": "ic_bg_tt",
+      "param": {
+        "text": "圈子动态更新",
+        "icon": "",
+        "bg": 1
+      }
+    },
+    {
+      "type": "text",
+      "param": {
+        "text": "你在qqqq0000的服务器发布的动态：哈 已被管理员调整了分类：📷美图晒照调整为🎈日常分享",
+        "line": 0
+      }
+    },
+    {
+      "type": "button",
+      "param": {
+        "list": [
+          {
+            "type": 0,
+            "text": "查看详情",
+            "enable": 1,
+            "event": {
+              "method": "html_page",
+              "param": {
+                "url": "https://newtest.fanbook.mobi/circle/453482406100340736?env=newtest"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -53,7 +53,7 @@ packages:
   dynamic_card:
     dependency: "direct main"
     description:
-      path: "../client/plugins/dynamic_card"
+      path: "plugins/dynamic_card_editor"
       relative: true
     source: path
     version: "2.0.1+2"

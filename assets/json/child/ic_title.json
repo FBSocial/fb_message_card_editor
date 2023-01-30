@@ -1,0 +1,8 @@
+{
+  "type":"ic_title",
+  "param":{
+    "text":"我是标题与Icon",
+    "icon":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Video-Game-Controller-Icon-IDV-green.svg/249px-Video-Game-Controller-Icon-IDV-green.svg.png",
+    "bg":0
+  }
+}

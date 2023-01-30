@@ -1,0 +1,12 @@
+{
+  "type": "tit_text",
+  "param": {
+    "list": [
+      {
+        "text": "内容文字内容文字",
+        "title": "标题：",
+        "type": 0
+      }
+    ]
+  }
+}

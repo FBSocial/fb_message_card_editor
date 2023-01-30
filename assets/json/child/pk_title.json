@@ -1,0 +1,30 @@
+{
+  "type":"radio",
+  "param":{
+    "max":1,
+    "layout":1,
+    "enable":1,
+    "list":[
+      {
+        "pre":"",
+        "value":0,
+        "type":2,
+        "data":{
+          "text":"郭德纲",
+          "select":"",
+          "total":""
+        }
+      },
+      {
+        "pre":"",
+        "value":1,
+        "type":2,
+        "data":{
+          "text":"郭麒麟",
+          "select":"",
+          "total":""
+        }
+      }
+    ]
+  }
+}

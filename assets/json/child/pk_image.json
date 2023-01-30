@@ -1,0 +1,32 @@
+{
+  "type":"radio",
+  "param":{
+    "max":1,
+    "layout":1,
+    "enable":1,
+    "list":[
+      {
+        "pre":"",
+        "value":0,
+        "type":3,
+        "data":{
+          "text":"凑凑火锅",
+          "select":"",
+          "total":"",
+          "image":"https://fb-cdn.fanbook.mobi/fanbook/app/files/chatroom/image/f6ef4dbd0e89959009b41ec00b36e144.jpg"
+        }
+      },
+      {
+        "pre":"",
+        "value":0,
+        "type":3,
+        "data":{
+          "text":"四季椰林",
+          "select":"",
+          "total":"",
+          "image":"https://fanbook-outer-1251001060.cos.ap-shanghai.myqcloud.com/3522-42c55b9b.png?width=1920&height=1190"
+        }
+      }
+    ]
+  }
+}

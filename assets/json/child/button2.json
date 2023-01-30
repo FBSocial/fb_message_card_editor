@@ -1,0 +1,27 @@
+{
+  "type":"button",
+  "param":{
+    "list":[
+      {
+        "type":0,
+        "text":"按钮一",
+        "enable":1,
+        "event":{
+          "method":"request",
+          "param":{
+            "url":"aaaa"
+          }
+        }
+      },
+      {
+        "type":0,
+        "text":"按钮二",
+        "enable":1,
+        "event":{
+          "method":"request",
+          "param":{}
+        }
+      }
+    ]
+  }
+}

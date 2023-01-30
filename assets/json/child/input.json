@@ -1,0 +1,7 @@
+{
+  "type":"input",
+  "param":{
+    "text":"",
+    "hint":"请输入..."
+  }
+}
