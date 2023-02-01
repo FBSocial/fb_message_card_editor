@@ -154,6 +154,20 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                                     .dispatch(context);
                               },
                             ),
+                            if(child is ImageWidget) ...[
+                              Expanded(
+                                child: SizedBox(),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.edit_note,
+                                    color: Colors.amberAccent),
+                                tooltip: '更换',
+                                onPressed: () {
+                                  CardOnTapNotification(OptType.modifyImage, index)
+                                      .dispatch(context);
+                                },
+                              ),
+                            ]
                           ],
                         ),
                       ),
@@ -224,6 +238,7 @@ enum OptType {
   remove, // 移除
   up, // 上移
   down, // 下移动
+  modifyImage, // 下移动
 }
 
 class CardOnTapNotification extends Notification {

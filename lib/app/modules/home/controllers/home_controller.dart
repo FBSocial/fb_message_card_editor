@@ -15,6 +15,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   String updateShowJsonMap = 'updateShowJsonMap';
   String updateItemList = 'updateItemList';
 
+  String updateImage = 'updateImage';
+
   Map<String, dynamic>? showMap;
   List<InputItem>? showItemList;
 
@@ -145,6 +147,9 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     dynamicWidgetContent?.children![index] = down ?? "";
     showMap = dynamicWidgetContent?.toJson();
     update([updateDynamicWidget, updateShowJsonMap]);
+  }
+  void modifyImage(int index) {
+
   }
 }
 

@@ -44,6 +44,9 @@ dependencies:
   flutter_easyloading: ^3.0.5
   # 虚线边框小部件 https://github.com/ajilo297/Flutter-Dotted-Border
   dotted_border: ^2.0.0+2
+  # 用于decoration的虚线边框，类似BoxDocoration https://github.com/mdalameen/dotted_decoration
+  dotted_decoration: ^2.0.0
+
   dynamic_widget:
     git:
       url: https://gitee.com/fanbook/dynamic_widget.git
@@ -57,6 +60,10 @@ dependencies:
   #图片拖拽控件
   desktop_drop: ^0.4.0
 
+  x_picker:
+    git:
+      url: https://gitee.com/fanbook/x_picker
+      ref: 4f7c004f01f62e7fe8d18803bb4270418cc900b8
 
 dev_dependencies:
   flutter_test:

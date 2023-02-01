@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
+import 'package:cross_file/cross_file.dart';
+import 'package:desktop_drop/desktop_drop.dart';
+import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
 import 'package:fb_message_card_editor/app/modules/home/views/card_preview_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:json_editor/json_editor.dart';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:get/get.dart';
+import 'package:x_picker/x_picker.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -33,6 +37,149 @@ class HomeView extends GetView<HomeController> {
       );
     });
   }
+
+  XFile? file;
+
+  _showImagePikerDialog(BuildContext context) {
+    file = null;
+    showDialog<Null>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Text('更换图片'),
+              content: Container(
+                color: Colors.white,
+                width: 440,
+                height: 260,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text('上传图片'),
+                      const SizedBox(height: 10),
+                      GetBuilder<HomeController>(
+                          id: controller.updateImage,
+                          builder: (c) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropTarget(
+                                  onDragDone: _dragDone,
+                                  child: file == null
+                                      ? Center(
+                                          child: uploadImage(),
+                                        )
+                                      : viewImage(file!),
+                                ),
+                                if (file != null) ...[
+                                  _vSizeBox(),
+                                  GestureDetector(
+                                    child: const Text(
+                                      '重新上传',
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.blue),
+                                    ),
+                                    onTap: () {
+                                      file = null;
+                                      controller
+                                          .update([controller.updateImage]);
+                                    },
+                                  ),
+                                ]
+                              ],
+                            );
+                          }),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          buildMaterialButton('取消', () {
+                            Navigator.pop(Get.context!);
+                          }),
+                          const SizedBox(width: 10),
+                          buildMaterialButton('确定', () {},
+                              bgColor: const Color(0xFF198CFE),
+                              txtColor: Colors.white)
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ));
+        }).then((val) {
+      print(val);
+    });
+  }
+
+  _hSizeBox() => const SizedBox(width: 8);
+
+  _vSizeBox() => const SizedBox(height: 8);
+
+  static final imageType = ["gif", "jpg", "jpeg", "png", "bmp", "webp"];
+
+  Widget uploadImage() => Container(
+        width: 400,
+        height: 160,
+        // 虚线框使用的是一个第三方插件dotted_decoration
+        decoration: DottedDecoration(
+          color: Colors.blue,
+          shape: Shape.box,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.image, size: 60, color: Colors.blue),
+            _vSizeBox(),
+            GestureDetector(
+              onTap: () async {
+                List<XFile> picks = await XPicker.instance.pickFiles(
+                    dialogTitle: "打开",
+                    allowMultiple: false,
+                    type: FileType.custom,
+                    allowedExtensions: imageType,
+                    withData: true);
+                if (picks != null && picks.isNotEmpty) {
+                  file = picks[0];
+                  controller.update([controller.updateImage]);
+                }
+              },
+              child: const Text(
+                '拖拽文件至此，或 选择文件上传',
+                style: TextStyle(fontSize: 14, color: Colors.blue),
+              ),
+            ),
+            _vSizeBox(),
+            const Text(
+              '支持 JPEG/PNG/GIF 格式，大小不超过 10 MB',
+              style: TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
+      );
+
+  void _dragDone(DropDoneDetails detail) {
+    file = detail.files.last;
+    controller.update([controller.updateImage]);
+    print('file:${file?.path}');
+  }
+
+  Widget viewImage(XFile file) => Container(
+        width: 400,
+        height: 160,
+        // 虚线框使用的是一个第三方插件dotted_decoration
+        decoration: DottedDecoration(
+          color: Colors.blue,
+          shape: Shape.box,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Image.file(
+          File(file.path),
+          width: 400,
+          height: 160,
+        ),
+      );
 
   _dynamicWidget(BuildContext context, Map<String, dynamic>? map) {
     return DynamicWidget(
@@ -88,7 +235,7 @@ class HomeView extends GetView<HomeController> {
 
   _sendToMeBtn() => buildMaterialButton('向我发送预览', controller.sendToMe);
 
-  _sendToGuildBtn() => buildMaterialButton('发送到服务器', controller.sendToGuild,
+  _sendToGuildBtn() => buildMaterialButton('发送到服务器', () {},
       bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
 
   MaterialButton buildMaterialButton(String text, VoidCallback onPress,
@@ -167,6 +314,8 @@ class HomeView extends GetView<HomeController> {
                   controller.upIndex(n.index);
                 } else if (n.opt == OptType.down) {
                   controller.downIndex(n.index);
+                } else if (n.opt == OptType.modifyImage) {
+                  _showImagePikerDialog(context);
                 }
                 return true;
               }
