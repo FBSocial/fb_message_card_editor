@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       locale: Get.deviceLocale,
+      debugShowCheckedModeBanner: false,
       translations: MessageKeys(),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
@@ -44,13 +46,13 @@ class MyApp extends StatelessWidget {
       theme: DefaultTheme().themeData,
       darkTheme: darkTheme,
       themeMode: ThemeMode.light,
-      builder: (context, child) {
+      builder: EasyLoading.init(builder: (context, child) {
         final data = MediaQuery.of(context);
         return MediaQuery(
           data: data.copyWith(textScaleFactor: 1),
           child: child!,
         );
-      },
+      }),
       navigatorKey: Config.navigatorKey,
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,

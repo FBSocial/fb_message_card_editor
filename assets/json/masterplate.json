@@ -8,6 +8,11 @@
       "text": "圈子更新"
     },
     {
+      "type": "shop",
+      "file": "shop.json",
+      "text": "商城"
+    },
+    {
       "type": "game_start",
       "file": "game_start.json",
       "text": "游戏开始"

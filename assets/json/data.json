@@ -3,17 +3,49 @@
   "text": "通用",
   "children": [
     {
-      "type": "text",
-      "text": "文本",
+      "type": "hot",
+      "text": "热门组件",
       "children": [
         {
-          "type": "text",
+          "text": "图标文字色块",
+          "file": "ic_bg_tt.json"
+        },
+        {
+          "type": "txt",
           "text": "文本",
           "file": "text.json"
         },
         {
-          "type": "标题：内容",
-          "text": "文本",
+          "type": "title",
+          "text": "标题文本",
+          "file": "title.json"
+        },
+        {
+          "text": "普通按钮",
+          "file": "button.json"
+        },
+        {
+          "text": "图片（中号）",
+          "file": "image2.json"
+        },
+        {
+          "text": "分割线",
+          "file": "divider.json"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "text": "文本",
+      "children": [
+        {
+          "type": "txt",
+          "text": "普通文本",
+          "file": "text.json"
+        },
+        {
+          "type": "title",
+          "text": "标题文本",
           "file": "title.json"
         },
         {
@@ -39,7 +71,7 @@
         {
           "type": "con_text",
           "text": "内容一级标题",
-          "file": ".json"
+          "file": "con_text.json"
         },
         {
           "type": "con_text",

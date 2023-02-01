@@ -1,7 +1,9 @@
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:dynamic_card/widgets/title/vote_title.dart';
+import 'package:fb_message_card_editor/util/mouse_hover_builder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class DynamicWidget extends StatefulWidget {
   final Map? json;
@@ -9,6 +11,7 @@ class DynamicWidget extends StatefulWidget {
   final DynamicController? controller;
   final TempWidgetConfig? config;
   final bool onlyRead;
+  final bool showMouse;
 
   const DynamicWidget({
     Key? key,
@@ -16,6 +19,7 @@ class DynamicWidget extends StatefulWidget {
     this.controller,
     this.config,
     this.onlyRead = false,
+    this.showMouse = false,
   }) : super(key: key);
 
   @override
@@ -93,12 +97,81 @@ class _DynamicWidgetState extends State<DynamicWidget> {
           resultWidget.children!.clear();
           resultWidget.children!.addAll(children);
         }
+
+        if (widget.showMouse) {
+          final List<Widget> mouseChildren = [];
+          for (int index = 0; index < columnChildren.length; index++) {
+            Widget child = columnChildren[index];
+            mouseChildren.add(MouseHoverStatefulBuilder(
+                builder: (BuildContext context, bool hover) {
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    color: hover
+                        ? Colors.grey.withOpacity(0.2)
+                        : Colors.transparent,
+                    child: child,
+                  ),
+                  if (hover)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.delete,
+                                  color: Colors.redAccent),
+                              tooltip: '删除',
+                              onPressed: () {
+                                CardOnTapNotification(OptType.remove, index)
+                                    .dispatch(context);
+                              },
+                            ),
+                            Expanded(
+                              child: SizedBox(),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_upward,
+                                  color: Colors.cyanAccent),
+                              tooltip: '上移',
+                              onPressed: () {
+                                CardOnTapNotification(OptType.up, index)
+                                    .dispatch(context);
+                              },
+                            ),
+                            Expanded(
+                              child: SizedBox(),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.arrow_downward,
+                                  color: Colors.cyanAccent),
+                              tooltip: '下移',
+                              onPressed: () {
+                                CardOnTapNotification(OptType.down, index)
+                                    .dispatch(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                ],
+              );
+            }));
+          }
+          resultWidget.children!.clear();
+          resultWidget.children!.addAll(mouseChildren);
+        }
         if (needPadding) {
           resultWidget.children?.insert(0, const SizedBox(height: 8));
         }
       } else if (resultWidget is! ButtonWidget && widget.onlyRead) {
         return AbsorbPointer(child: resultWidget);
       }
+
       return resultWidget;
     } catch (e) {
       if (kDebugMode) {
@@ -147,6 +220,19 @@ class FunctionName {
   static const String request = 'request';
 }
 
+enum OptType {
+  remove, // 移除
+  up, // 上移
+  down, // 下移动
+}
+
+class CardOnTapNotification extends Notification {
+  OptType opt;
+  int index;
+
+  CardOnTapNotification(this.opt, this.index);
+}
+
 class MessageOnTapNotification extends Notification {
   MessageOnTapNotification();
 }
@@ -172,14 +258,20 @@ void onClick(ButtonCallbackParam btnParam) {
   // final param = btnParam.event!.param ?? {};
   switch (btnParam.event!.method) {
     case FunctionName.openMiniProgram:
+      EasyLoading.showInfo("打开小程序");
       break;
     case FunctionName.openHtmlPage:
+      EasyLoading.showInfo("打开html");
+
       break;
     case FunctionName.requestBotApi:
+      EasyLoading.showInfo("打开机器人");
       break;
     case FunctionName.detailPage:
+      EasyLoading.showInfo("打开详情页");
       break;
     case FunctionName.request:
+      EasyLoading.showInfo("发送请求");
       break;
   }
 }

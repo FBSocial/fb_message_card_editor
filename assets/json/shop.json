@@ -1,0 +1,35 @@
+{
+  "type":  "column",
+  "children":  [
+    {
+      "param":  {
+        "text":  "商城"
+      },
+      "type":  "title"
+    },
+    {
+      "param":  {
+        "image":  "https://img01.yzcdn.cn/upload_files/2021/11/17/FpoZQu-SN7E8YcSvOpaAZwDUrX8Y.jpg!large.jpg",
+        "type":  1
+      },
+      "type":  "image"
+    },
+    {
+      "type":  "button",
+      "param":  {
+        "list":  [
+          {
+            "type":  3,
+            "text":  "商城",
+            "event":  {
+              "method":  "html_page",
+              "param":  {
+                "url":  "https://j.youzan.com/EWshmT"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

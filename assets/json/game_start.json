@@ -5,7 +5,7 @@
     {
       "param":  {
         "image":  "https://fanbook-gamescluster-1251001060.file.myqcloud.com/tetris-game/5e2a1029-8770-485d-84cd-0f52cbaac027.png",
-        "type":  5
+        "type":  2
       },
       "type":  "image"
     },
@@ -25,6 +25,6 @@
           }
         ]
       }
-    },
+    }
   ]
 }
