@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
+import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -9,7 +10,11 @@ import 'package:get/get.dart';
 import 'package:json_editor/json_editor.dart';
 import 'package:clipboard/clipboard.dart';
 
-class HomeController extends GetxController with GetTickerProviderStateMixin{
+import 'package:cross_file/cross_file.dart';
+
+import '../../../../http/upload/upload.dart';
+
+class HomeController extends GetxController with GetTickerProviderStateMixin {
   final count = 0.obs;
   String updateDynamicWidget = 'updateDynamicWidget';
   String updateShowJsonMap = 'updateShowJsonMap';
@@ -19,7 +24,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
 
   Map<String, dynamic>? showMap;
   List<InputItem>? showItemList;
-
+  String? uploadImageUrl;
   DynamicWidgetContent? dynamicWidgetContent;
 
   void increment() => count.value++;
@@ -32,8 +37,8 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
   @override
   void onInit() {
     super.onInit();
-    tabController = TabController(
-        initialIndex: 1, length: spList.length, vsync: this);
+    tabController =
+        TabController(initialIndex: 1, length: spList.length, vsync: this);
     _getShowJson();
     _getdata();
   }
@@ -71,13 +76,14 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     }
     return result;
   }
-  Future<Map<String, dynamic>?> getMasterPlateFile(String file) async{
+
+  Future<Map<String, dynamic>?> getMasterPlateFile(String file) async {
     String data = await rootBundle.loadString("$jsonPath/$file");
     Map<String, dynamic>? temp = jsonDecode(data);
     return temp;
   }
 
-  changgeRoot(Map<String, dynamic> root){
+  changgeRoot(Map<String, dynamic> root) {
     showMap = root;
     dynamicWidgetContent = DynamicWidgetContent.fromJson(showMap ?? {});
     update([updateDynamicWidget, updateShowJsonMap]);
@@ -90,18 +96,24 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     update([updateDynamicWidget, updateShowJsonMap]);
   }
 
-  removeAll(){
+  removeAll() {
     dynamicWidgetContent?.children?.clear();
     showMap = dynamicWidgetContent?.toJson();
     update([updateDynamicWidget, updateShowJsonMap]);
   }
 
-  sendToMe(){
+  sendToMe() async {
+    EasyLoading.showToast('敬请期待');
 
+    // var chat = await UserApi.getChatId();
+    // print('chat:$chat');
+    //
+    // var result = await UserApi.sendPreView(chat['id'], '4321');
+    // print('result:$result');
   }
 
-  sendToGuild(){
-
+  sendToGuild() {
+    EasyLoading.showToast('敬请期待');
   }
 
   removeIndex(int index) {
@@ -148,8 +160,28 @@ class HomeController extends GetxController with GetTickerProviderStateMixin{
     showMap = dynamicWidgetContent?.toJson();
     update([updateDynamicWidget, updateShowJsonMap]);
   }
-  void modifyImage(int index) {
 
+  void modifyImage(int index) {}
+
+  Future<void> uploadImage(XFile file, int index) async {
+    EasyLoading.show(status: '上传中');
+    try {
+      Uint8List byte = await file.readAsBytes();
+      String? avatar = await uploadFileIfNotExist(
+          bytes: byte, fileType: "headImage", filename: file.name);
+      uploadImageUrl = avatar;
+      print('avatar:$avatar');
+      String? value = dynamicWidgetContent?.children![index];
+      Map json = jsonDecode(value!);
+      json['param']['image'] = avatar;
+      dynamicWidgetContent?.children![index] = jsonEncode(json);
+      showMap = dynamicWidgetContent?.toJson();
+    } catch (e) {
+      print(e);
+    } finally {
+      EasyLoading.dismiss();
+    }
+    update([updateDynamicWidget, updateShowJsonMap,updateImage]);
   }
 }
 

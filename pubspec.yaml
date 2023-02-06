@@ -37,7 +37,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  get: ^4.6.5
+#  get: ^4.6.5
   # 剪切板
   clipboard: ^0.1.3
   # toast
@@ -65,6 +65,30 @@ dependencies:
       url: https://gitee.com/fanbook/x_picker
       ref: 4f7c004f01f62e7fe8d18803bb4270418cc900b8
 
+  service:
+    path: ./plugins/module_service
+
+  package_info_plus: ^1.3.0
+  device_info_plus: ^4.0.0
+  android_id:
+    git:
+      url: https://github.com/FBSocial/android_id.git
+      ref: 0.0.5
+
+  flutter_secure_storage:
+    git:
+      url: https://gitee.com/fanbook/flutter_secure_storage.git
+      ref: v4.2.1-hotfix
+
+  # 限制函数的连续执行，防止按钮重复点击用的 https://github.com/mhrst/just_throttle_it
+  just_throttle_it: ^2.1.0
+  just_debounce_it: ^4.1.0
+
+  # 多图片选择器，原始版本已不被支持，作者推荐【https://github.com/fluttercandies/flutter_wechat_assets_picker】
+  multi_image_picker:
+    git:
+      url: https://gitee.com/fanbook/fb_media_picker.git
+      ref: 1.1.0+3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -87,6 +111,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/images/
     - assets/json/
     - assets/json/child/
 

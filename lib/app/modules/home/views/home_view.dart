@@ -1,18 +1,18 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
+
 import 'package:cross_file/cross_file.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
 import 'package:fb_message_card_editor/app/modules/home/views/card_preview_widget.dart';
+import 'package:fb_message_card_editor/util/config.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:json_editor/json_editor.dart';
-import 'package:file_picker/file_picker.dart';
-
 import 'package:get/get.dart';
+import 'package:json_editor/json_editor.dart';
+import 'package:lib_utils/universal_platform.dart';
 import 'package:x_picker/x_picker.dart';
 
 import '../controllers/home_controller.dart';
@@ -21,7 +21,7 @@ class HomeView extends GetView<HomeController> {
   HomeView({Key? key}) : super(key: key);
 
   static const double leftWidth = 330;
-  static const double centerWidth = 400;
+  static const double centerWidth = 500;
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +38,11 @@ class HomeView extends GetView<HomeController> {
     });
   }
 
-  XFile? file;
+  XFile? xfile;
+  String? imagesUrl;
 
-  _showImagePikerDialog(BuildContext context) {
-    file = null;
+  _showImagePikerDialog(BuildContext context, int index) {
+    xfile = null;
     showDialog<Null>(
         context: context,
         barrierDismissible: true,
@@ -66,13 +67,16 @@ class HomeView extends GetView<HomeController> {
                               children: [
                                 DropTarget(
                                   onDragDone: _dragDone,
-                                  child: file == null
-                                      ? Center(
-                                          child: uploadImage(),
-                                        )
-                                      : viewImage(file!),
+                                  child: UniversalPlatform.isWeb &&
+                                          controller.uploadImageUrl != null
+                                      ? viewNetImage(controller.uploadImageUrl!)
+                                      : xfile == null
+                                          ? Center(
+                                              child: uploadImage(index),
+                                            )
+                                          : viewImage(xfile!),
                                 ),
-                                if (file != null) ...[
+                                if (xfile != null) ...[
                                   _vSizeBox(),
                                   GestureDetector(
                                     child: const Text(
@@ -80,10 +84,12 @@ class HomeView extends GetView<HomeController> {
                                       style: TextStyle(
                                           fontSize: 14, color: Colors.blue),
                                     ),
-                                    onTap: () {
-                                      file = null;
+                                    onTap: () async {
+                                      xfile = null;
+                                      controller.uploadImageUrl = null;
                                       controller
                                           .update([controller.updateImage]);
+                                      _choiceFilepick(index);
                                     },
                                   ),
                                 ]
@@ -98,7 +104,16 @@ class HomeView extends GetView<HomeController> {
                             Navigator.pop(Get.context!);
                           }),
                           const SizedBox(width: 10),
-                          buildMaterialButton('确定', () {},
+                          buildMaterialButton('确定', () {
+                            if (xfile != null) {
+                              if (UniversalPlatform.isWeb) {
+                                controller.uploadImageUrl = null;
+                              } else {
+                                controller.uploadImage(xfile!, index);
+                              }
+                              Navigator.pop(Get.context!);
+                            }
+                          },
                               bgColor: const Color(0xFF198CFE),
                               txtColor: Colors.white)
                         ],
@@ -118,7 +133,7 @@ class HomeView extends GetView<HomeController> {
 
   static final imageType = ["gif", "jpg", "jpeg", "png", "bmp", "webp"];
 
-  Widget uploadImage() => Container(
+  Widget uploadImage(int index) => Container(
         width: 400,
         height: 160,
         // 虚线框使用的是一个第三方插件dotted_decoration
@@ -134,16 +149,7 @@ class HomeView extends GetView<HomeController> {
             _vSizeBox(),
             GestureDetector(
               onTap: () async {
-                List<XFile> picks = await XPicker.instance.pickFiles(
-                    dialogTitle: "打开",
-                    allowMultiple: false,
-                    type: FileType.custom,
-                    allowedExtensions: imageType,
-                    withData: true);
-                if (picks != null && picks.isNotEmpty) {
-                  file = picks[0];
-                  controller.update([controller.updateImage]);
-                }
+                _choiceFilepick(index);
               },
               child: const Text(
                 '拖拽文件至此，或 选择文件上传',
@@ -159,11 +165,44 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
-  void _dragDone(DropDoneDetails detail) {
-    file = detail.files.last;
-    controller.update([controller.updateImage]);
-    print('file:${file?.path}');
+  _choiceFilepick(int index) async {
+    List<XFile> picks = await XPicker.instance.pickFiles(
+        dialogTitle: "打开",
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: imageType,
+        withData: true);
+    if (picks != null && picks.isNotEmpty) {
+      xfile = picks[0];
+      controller.update([controller.updateImage]);
+      if (UniversalPlatform.isWeb) {
+        controller.uploadImage(xfile!, index);
+        Navigator.pop(Get.context!);
+      }
+    }
   }
+
+  void _dragDone(DropDoneDetails detail) {
+    xfile = detail.files.last;
+    controller.update([controller.updateImage]);
+    print('file:${xfile?.path}');
+  }
+
+  Widget viewNetImage(String file) => Container(
+        width: 400,
+        height: 160,
+        // 虚线框使用的是一个第三方插件dotted_decoration
+        decoration: DottedDecoration(
+          color: Colors.blue,
+          shape: Shape.box,
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Image.network(
+          file,
+          width: 400,
+          height: 160,
+        ),
+      );
 
   Widget viewImage(XFile file) => Container(
         width: 400,
@@ -204,7 +243,7 @@ class HomeView extends GetView<HomeController> {
               ),
             ),
             commonConfig: CommonConfig(
-                widgetWith: Platform.isMacOS || kIsWeb ? 300 : 100)));
+                widgetWith: UniversalPlatform.isMacOS || kIsWeb ? 300 : 100)));
   }
 
   _centerView(Widget child) => Container(
@@ -235,7 +274,7 @@ class HomeView extends GetView<HomeController> {
 
   _sendToMeBtn() => buildMaterialButton('向我发送预览', controller.sendToMe);
 
-  _sendToGuildBtn() => buildMaterialButton('发送到服务器', () {},
+  _sendToGuildBtn() => buildMaterialButton('发送到服务器', controller.sendToGuild,
       bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
 
   MaterialButton buildMaterialButton(String text, VoidCallback onPress,
@@ -300,7 +339,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                     commonConfig: CommonConfig(
-                        widgetWith: Platform.isMacOS || kIsWeb
+                        widgetWith: UniversalPlatform.isMacOS || kIsWeb
                             ? centerWidth
                             : constrains.maxWidth))),
           );
@@ -315,7 +354,7 @@ class HomeView extends GetView<HomeController> {
                 } else if (n.opt == OptType.down) {
                   controller.downIndex(n.index);
                 } else if (n.opt == OptType.modifyImage) {
-                  _showImagePikerDialog(context);
+                  _showImagePikerDialog(context, n.index);
                 }
                 return true;
               }
@@ -454,7 +493,7 @@ class HomeView extends GetView<HomeController> {
       id: controller.updateDynamicWidget,
       builder: (c) {
         return SizedBox(
-          width: Platform.isMacOS || kIsWeb ? 280 : 200,
+          width: UniversalPlatform.isMacOS || kIsWeb ? 280 : 200,
           child: ListView.builder(
               itemCount: controller.showItemList?.length,
               itemBuilder: (context, index) {
@@ -463,10 +502,15 @@ class HomeView extends GetView<HomeController> {
                   children: [
                     Row(
                       children: [
-                        Icon(
-                          getIconData(item?.type ?? ""),
-                          color: getRandColor(index),
-                          size: 55,
+                        // Icon(
+                        //   getIconData(item?.type ?? ""),
+                        //   color: getRandColor(index),
+                        //   size: 55,
+                        // ),
+                        Image.asset(
+                          Config.ASSETS_IMG + (item?.icon ?? ""),
+                          width: 55,
+                          height: 55,
                         ),
                         Text(item?.text ?? "",
                             style: const TextStyle(fontSize: 18))
@@ -486,10 +530,16 @@ class HomeView extends GetView<HomeController> {
                                       },
                                       child: Row(
                                         children: [
-                                          Icon(
-                                            getIconData(child.type ?? ""),
-                                            color: Colors.grey,
-                                            size: 30,
+                                          // Icon(
+                                          //   getIconData(child.type ?? ""),
+                                          //   color: Colors.grey,
+                                          //   size: 30,
+                                          // ),
+                                          Image.asset(
+                                            Config.ASSETS_IMG +
+                                                (item?.icon ?? ""),
+                                            width: 20,
+                                            height: 20,
                                           ),
                                           Text(child.text ?? "",
                                               style: const TextStyle(

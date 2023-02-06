@@ -22,11 +22,12 @@ class InputType {
 }
 
 class InputItem {
+  String? icon;
   String? type;
   String? text;
   List<InputChild>? children;
 
-  InputItem({this.type, this.text, this.children});
+  InputItem({this.type, this.text, this.icon, this.children});
 
   factory InputItem.fromJson(Map<String, dynamic> json) {
     List<InputChild> result = [];
@@ -39,6 +40,7 @@ class InputItem {
     return InputItem(
       type: json["type"],
       text: json["text"],
+      icon: json["icon"],
       children: result,
     );
   }
@@ -46,14 +48,16 @@ class InputItem {
 
 class InputChild {
   String? type;
+  String? icon;
   String? text;
   String? file;
 
-  InputChild({this.type, this.text, this.file});
+  InputChild({this.type, this.text, this.icon, this.file});
 
   factory InputChild.fromJson(Map<String, dynamic> json) => InputChild(
         type: json["type"],
         text: json["text"],
+        icon: json["text"],
         file: json["file"],
       );
 }

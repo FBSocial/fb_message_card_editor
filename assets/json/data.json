@@ -5,6 +5,7 @@
     {
       "type": "hot",
       "text": "热门组件",
+      "icon": "contend_btn.png",
       "children": [
         {
           "text": "图标文字色块",
@@ -37,6 +38,7 @@
     {
       "type": "text",
       "text": "文本",
+      "icon": "content.png",
       "children": [
         {
           "type": "txt",
@@ -82,6 +84,7 @@
     },
     {
       "type": "title",
+      "icon": "title.png",
       "text": "标题",
       "children": [
         {
@@ -105,6 +108,7 @@
     {
       "type": "image",
       "text": "图片",
+      "icon": "image.png",
       "children": [
         {
           "text": "图片",
@@ -123,6 +127,7 @@
     {
       "type": "radio",
       "text": "选择",
+      "icon": "btn.png",
       "children": [
         {
           "text": "单选",
@@ -153,6 +158,7 @@
     {
       "type": "input",
       "text": "输入框",
+      "icon": "content.png",
       "children": [
         {
           "text": "输入框",
@@ -163,6 +169,7 @@
     {
       "type": "divider",
       "text": "分割线",
+      "icon": "divider.png",
       "children": [
         {
           "text": "分割线",
@@ -173,6 +180,7 @@
     {
       "type": "button",
       "text": "按钮",
+      "icon": "btn.png",
       "children": [
         {
           "text": "普通按钮",
