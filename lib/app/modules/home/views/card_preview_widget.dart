@@ -1,30 +1,39 @@
+import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:dynamic_card/widgets/title/vote_title.dart';
 import 'package:fb_message_card_editor/util/mouse_hover_builder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
 
 class DynamicWidget extends StatefulWidget {
   final Map? json;
 
   final DynamicController? controller;
   final TempWidgetConfig? config;
+  final DynamicWidgetItemClick? itemClick;
   final bool onlyRead;
   final bool showMouse;
+  final bool canDrag;
 
   const DynamicWidget({
     Key? key,
     required this.json,
     this.controller,
     this.config,
+    this.canDrag = false,
     this.onlyRead = false,
     this.showMouse = false,
+    this.itemClick,
   }) : super(key: key);
 
   @override
   State createState() => _DynamicWidgetState();
 }
+
+typedef DynamicWidgetItemClick = void Function(
+    OptType opt, int index, int newIndex);
 
 class _DynamicWidgetState extends State<DynamicWidget> {
   WidgetNode? _node;
@@ -80,8 +89,13 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     super.didUpdateWidget(oldWidget);
   }
 
+  List<GlobalKey> itenGlobalKeyList = [];
+  OverlayEntry? mOverlayEntry;
+  int? currentIndex;
+
   Widget buildWidget() {
     try {
+      itenGlobalKeyList.clear();
       if (_node == null) return Container();
       final resultWidget = widgetVisitor.visitNode(_node!);
       if (resultWidget is ColumnWidget) {
@@ -101,8 +115,21 @@ class _DynamicWidgetState extends State<DynamicWidget> {
         if (widget.showMouse) {
           final List<Widget> mouseChildren = [];
           for (int index = 0; index < columnChildren.length; index++) {
+            GlobalKey itemKey = GlobalKey();
+            itenGlobalKeyList.add(itemKey);
             Widget child = columnChildren[index];
-            mouseChildren.add(MouseHoverStatefulBuilder(
+            bool isImageWidget = child is ImageWidget;
+            Widget onItem = currentIndex == index
+                ? Container(
+                    decoration: DottedDecoration(
+                      color: Colors.blue,
+                      shape: Shape.box,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    ),
+                    child: child,
+                  )
+                : child;
+            Widget mouse = MouseHoverStatefulBuilder(
                 builder: (BuildContext context, bool hover) {
               return Stack(
                 children: <Widget>[
@@ -110,74 +137,38 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                     color: hover
                         ? Colors.grey.withOpacity(0.2)
                         : Colors.transparent,
-                    child: child,
+                    child: onItem,
                   ),
-                  if (hover)
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.delete,
-                                  color: Colors.redAccent),
-                              tooltip: '删除',
-                              onPressed: () {
-                                CardOnTapNotification(OptType.remove, index)
-                                    .dispatch(context);
-                              },
-                            ),
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_upward,
-                                  color: Colors.cyanAccent),
-                              tooltip: '上移',
-                              onPressed: () {
-                                CardOnTapNotification(OptType.up, index)
-                                    .dispatch(context);
-                              },
-                            ),
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.arrow_downward,
-                                  color: Colors.cyanAccent),
-                              tooltip: '下移',
-                              onPressed: () {
-                                CardOnTapNotification(OptType.down, index)
-                                    .dispatch(context);
-                              },
-                            ),
-                            if(child is ImageWidget) ...[
-                              Expanded(
-                                child: SizedBox(),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.edit_note,
-                                    color: Colors.amberAccent),
-                                tooltip: '更换',
-                                onPressed: () {
-                                  CardOnTapNotification(OptType.modifyImage, index)
-                                      .dispatch(context);
-                                },
-                              ),
-                            ]
-                          ],
-                        ),
-                      ),
-                    )
+                  if (hover) _Decoration(itemKey, index, isImageWidget)
                 ],
               );
-            }));
+            });
+            Widget ikey = Container(
+              padding: EdgeInsets.only(right: 40),
+              key: ValueKey(columnChildren[index].hashCode),
+              child: mouse,
+            );
+            mouseChildren.add(ikey);
           }
           resultWidget.children!.clear();
           resultWidget.children!.addAll(mouseChildren);
+          if (widget.canDrag) {
+            return ReorderableListView(
+              buildDefaultDragHandles: true,
+              children: resultWidget.children!,
+              onReorder: (int oldIndex, int newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                currentIndex = -1;
+                _remove();
+                if (widget.itemClick != null) {
+                  widget.itemClick!(OptType.replase, oldIndex, newIndex);
+                }
+                setState(() {});
+              },
+            );
+          }
         }
         if (needPadding) {
           resultWidget.children?.insert(0, const SizedBox(height: 8));
@@ -198,6 +189,126 @@ class _DynamicWidgetState extends State<DynamicWidget> {
       );
     }
   }
+
+  _remove() {
+    if (mOverlayEntry != null) {
+      try {
+        mOverlayEntry?.remove();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  _Decoration(GlobalKey itemKey, int index, bool isImageWidget) {
+    return Positioned(
+      key: itemKey,
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 10,
+      child: GestureDetector(
+        onTap: () {
+          _remove();
+          setState(() {
+            currentIndex = index;
+          });
+          GlobalKey item = itenGlobalKeyList[index];
+          // GlobalKey item = itemKey;
+          final RenderBox renderBox =
+              item.currentContext!.findRenderObject() as RenderBox;
+          Size size = renderBox.size;
+          Offset position = renderBox.localToGlobal(Offset.zero);
+          mOverlayEntry = OverlayEntry(builder: (context) {
+            return Stack(children: <Widget>[
+              Positioned(
+                  top: position.dy - 40,
+                  left: position.dx,
+                  child: _deleteItem(index)),
+              if (isImageWidget)
+                Positioned(
+                    top: position.dy - 40,
+                    left: position.dx + size.width - 40,
+                    child: _changeItem(index)),
+            ]);
+          });
+          Overlay.of(Get.context!)?.insert(mOverlayEntry!);
+        },
+        child: Container(
+          decoration: DottedDecoration(
+            color: Colors.blue,
+            shape: Shape.box,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _deleteItem(int index) => Container(
+        width: 40,
+        height: 40,
+        child: IconButton(
+          icon: const Icon(Icons.delete, color: Colors.redAccent),
+          tooltip: '删除',
+          onPressed: () {
+            // CardOnTapNotification(
+            //         OptType.remove, index)
+            //     .dispatch(context);
+            _remove();
+            if (widget.itemClick != null) {
+              widget.itemClick!(OptType.remove, index, 0);
+            }
+          },
+        ),
+      );
+
+  _changeItem(int index) => Container(
+        width: 40,
+        height: 40,
+        child: IconButton(
+          icon: const Icon(Icons.edit_note, color: Colors.amberAccent),
+          tooltip: '更换',
+          onPressed: () {
+            _remove();
+            CardOnTapNotification(OptType.modifyImage, index).dispatch(context);
+          },
+        ),
+      );
+
+  // _upItem(int index) => Container(
+  //       width: 40,
+  //       height: 40,
+  //       child: IconButton(
+  //         icon: const Icon(Icons.upload_sharp, color: Colors.greenAccent),
+  //         tooltip: '删除',
+  //         onPressed: () {
+  //           // CardOnTapNotification(
+  //           //         OptType.remove, index)
+  //           //     .dispatch(context);
+  //           if (widget.itemClick != null) {
+  //             widget.itemClick!(OptType.up, index);
+  //           }
+  //         },
+  //       ),
+  //     );
+
+  // _downItem(int index) => Container(
+  //       width: 40,
+  //       height: 40,
+  //       child: IconButton(
+  //         icon: const Icon(Icons.download, color: Colors.greenAccent),
+  //         tooltip: '删除',
+  //         onPressed: () {
+  //           // CardOnTapNotification(
+  //           //         OptType.remove, index)
+  //           //     .dispatch(context);
+  //           if (widget.itemClick != null) {
+  //             widget.itemClick!(OptType.down, index);
+  //           }
+  //         },
+  //       ),
+  //     );
 
   WidgetNode? getNode() => _node;
 
@@ -239,6 +350,7 @@ enum OptType {
   up, // 上移
   down, // 下移动
   modifyImage, // 下移动
+  replase, // 下移动
 }
 
 class CardOnTapNotification extends Notification {

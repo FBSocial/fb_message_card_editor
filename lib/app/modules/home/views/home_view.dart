@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cross_file/cross_file.dart';
@@ -6,6 +7,8 @@ import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
 import 'package:fb_message_card_editor/app/modules/home/views/card_preview_widget.dart';
+import 'package:fb_message_card_editor/app/routes/app_pages.dart';
+import 'package:fb_message_card_editor/theme/const.dart';
 import 'package:fb_message_card_editor/util/config.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -43,6 +46,7 @@ class HomeView extends GetView<HomeController> {
 
   _showImagePikerDialog(BuildContext context, int index) {
     xfile = null;
+    controller.uploadImageUrl == null;
     showDialog<Null>(
         context: context,
         barrierDismissible: true,
@@ -66,7 +70,9 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 DropTarget(
-                                  onDragDone: _dragDone,
+                                  onDragDone: (detail) {
+                                    _dragDone(detail, index);
+                                  },
                                   child: UniversalPlatform.isWeb &&
                                           controller.uploadImageUrl != null
                                       ? viewNetImage(controller.uploadImageUrl!)
@@ -76,8 +82,9 @@ class HomeView extends GetView<HomeController> {
                                             )
                                           : viewImage(xfile!),
                                 ),
-                                if (xfile != null) ...[
-                                  _vSizeBox(),
+                                if (xfile != null ||
+                                    controller.uploadImageUrl != null) ...[
+                                  sizeHeight8,
                                   GestureDetector(
                                     child: const Text(
                                       '重新上传',
@@ -127,10 +134,6 @@ class HomeView extends GetView<HomeController> {
     });
   }
 
-  _hSizeBox() => const SizedBox(width: 8);
-
-  _vSizeBox() => const SizedBox(height: 8);
-
   static final imageType = ["gif", "jpg", "jpeg", "png", "bmp", "webp"];
 
   Widget uploadImage(int index) => Container(
@@ -146,7 +149,7 @@ class HomeView extends GetView<HomeController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.image, size: 60, color: Colors.blue),
-            _vSizeBox(),
+            sizeHeight8,
             GestureDetector(
               onTap: () async {
                 _choiceFilepick(index);
@@ -156,7 +159,7 @@ class HomeView extends GetView<HomeController> {
                 style: TextStyle(fontSize: 14, color: Colors.blue),
               ),
             ),
-            _vSizeBox(),
+            sizeHeight8,
             const Text(
               '支持 JPEG/PNG/GIF 格式，大小不超过 10 MB',
               style: TextStyle(fontSize: 14, color: Colors.grey),
@@ -182,10 +185,14 @@ class HomeView extends GetView<HomeController> {
     }
   }
 
-  void _dragDone(DropDoneDetails detail) {
+  void _dragDone(DropDoneDetails detail, int index) {
     xfile = detail.files.last;
     controller.update([controller.updateImage]);
     print('file:${xfile?.path}');
+    if (UniversalPlatform.isWeb) {
+      controller.uploadImage(xfile!, index);
+      Navigator.pop(Get.context!);
+    }
   }
 
   Widget viewNetImage(String file) => Container(
@@ -213,11 +220,13 @@ class HomeView extends GetView<HomeController> {
           shape: Shape.box,
           borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
-        child: Image.file(
-          File(file.path),
-          width: 400,
-          height: 160,
-        ),
+        child: kIsWeb
+            ? Container()
+            : Image.file(
+                File(file.path),
+                width: 400,
+                height: 160,
+              ),
       );
 
   _dynamicWidget(BuildContext context, Map<String, dynamic>? map) {
@@ -257,8 +266,10 @@ class HomeView extends GetView<HomeController> {
               Row(
                 children: [
                   _sendToMeBtn(),
-                  const SizedBox(width: 10),
+                  sizeWidth8,
                   _sendToGuildBtn(),
+                  sizeWidth8,
+                  _saveBtn(),
                 ],
               )
             ]),
@@ -274,8 +285,52 @@ class HomeView extends GetView<HomeController> {
 
   _sendToMeBtn() => buildMaterialButton('向我发送预览', controller.sendToMe);
 
+  _saveBtn() => buildMaterialButton('保存', controller.save);
+
   _sendToGuildBtn() => buildMaterialButton('发送到服务器', controller.sendToGuild,
       bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
+
+  _logout() => buildMaterialButton('退出登录', () async {
+        showDialog<Null>(
+            context: Get.context!,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                  title: const Text('退出登录'),
+                  actions: [],
+                  content: Container(
+                    color: Colors.white,
+                    width: 340,
+                    height: 100,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('是否退出登录'),
+                          const SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              buildMaterialButton('取消', () {
+                                Navigator.pop(Get.context!);
+                              }),
+                              const SizedBox(width: 10),
+                              buildMaterialButton('确定', () {
+                                controller.logout();
+                                Get.offAndToNamed(Routes.LOGIN);
+                              },
+                                  bgColor: const Color(0xFF198CFE),
+                                  txtColor: Colors.white)
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ));
+            }).then((val) {
+          print(val);
+        });
+      }, bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
 
   MaterialButton buildMaterialButton(String text, VoidCallback onPress,
           {Color bgColor = Colors.white,
@@ -315,47 +370,45 @@ class HomeView extends GetView<HomeController> {
       GetBuilder<HomeController>(
         id: controller.updateDynamicWidget,
         builder: (c) {
-          Widget result = SingleChildScrollView(
-            child: DynamicWidget(
-                showMouse: true,
-                json: controller.showMap,
-                config: TempWidgetConfig(
-                    radioConfig: RadioConfig(
-                      singleSelected: Icon(
-                        Icons.radio_button_on,
-                        size: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      groupSelected: Icon(
-                        Icons.radio_button_on_sharp,
-                        size: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    buttonConfig: ButtonConfig(
-                      dropdownConfig: DropdownConfig(
-                        dropdownIcon: () =>
-                            const Icon(Icons.arrow_drop_down, color: color3),
-                      ),
-                    ),
-                    commonConfig: CommonConfig(
-                        widgetWith: UniversalPlatform.isMacOS || kIsWeb
-                            ? centerWidth
-                            : constrains.maxWidth))),
+          Widget dy = DynamicWidget(
+            canDrag: true,
+            showMouse: true,
+            json: controller.showMap,
+            itemClick: (type, index, newIndex) {
+              _dealClick(type, index, newIndex);
+            },
+            config: TempWidgetConfig(
+                radioConfig: RadioConfig(
+                  singleSelected: Icon(
+                    Icons.radio_button_on,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  groupSelected: Icon(
+                    Icons.radio_button_on_sharp,
+                    size: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                buttonConfig: ButtonConfig(
+                  dropdownConfig: DropdownConfig(
+                    dropdownIcon: () =>
+                        const Icon(Icons.arrow_drop_down, color: color3),
+                  ),
+                ),
+                commonConfig: CommonConfig(
+                    widgetWith: UniversalPlatform.isMacOS || kIsWeb
+                        ? centerWidth
+                        : constrains.maxWidth)),
+          );
+          Widget result = Column(
+            children: [const Text(''), dy],
           );
           return NotificationListener(
-            child: result,
+            child: dy,
             onNotification: (n) {
               if (n is CardOnTapNotification) {
-                if (n.opt == OptType.remove) {
-                  controller.removeIndex(n.index);
-                } else if (n.opt == OptType.up) {
-                  controller.upIndex(n.index);
-                } else if (n.opt == OptType.down) {
-                  controller.downIndex(n.index);
-                } else if (n.opt == OptType.modifyImage) {
-                  _showImagePikerDialog(context, n.index);
-                }
+                _dealClick(n.opt, n.index, 0);
                 return true;
               }
               return false;
@@ -363,6 +416,20 @@ class HomeView extends GetView<HomeController> {
           );
         },
       );
+
+  _dealClick(OptType n, int index, int newIndex) {
+    if (n == OptType.remove) {
+      controller.removeIndex(index);
+    } else if (n == OptType.up) {
+      controller.upIndex(index);
+    } else if (n == OptType.down) {
+      controller.downIndex(index);
+    } else if (n == OptType.replase) {
+      controller.replease(index, newIndex);
+    } else if (n == OptType.modifyImage) {
+      _showImagePikerDialog(Get.context!, index);
+    }
+  }
 
   _rightView(Widget child) => Expanded(
           child: Container(
@@ -375,13 +442,18 @@ class HomeView extends GetView<HomeController> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('卡片编辑'),
-                IconButton(
-                  icon: const Icon(Icons.copy_all_outlined,
-                      color: Colors.cyanAccent),
-                  tooltip: '复制Json',
-                  onPressed: () {
-                    controller.copyValue();
-                  },
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.copy_all_outlined,
+                          color: Colors.cyanAccent),
+                      tooltip: '复制Json',
+                      onPressed: () {
+                        controller.copyValue();
+                      },
+                    ),
+                    _logout()
+                  ],
                 )
               ],
             ),
@@ -440,11 +512,7 @@ class HomeView extends GetView<HomeController> {
       child: TabBarView(
         controller: controller.tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: [
-          _materWidget(),
-          _leftWidget(),
-          Row(),
-        ],
+        children: [_materWidget(), _leftWidget(), _saveWidget()],
       ),
     );
 
@@ -464,6 +532,7 @@ class HomeView extends GetView<HomeController> {
                         if (snapshot.data == null) return SizedBox();
                         return GestureDetector(
                           onTap: () {
+                            controller.saveIndex = -1;
                             controller.changgeRoot(snapshot.data!);
                           },
                           child: Container(
@@ -489,6 +558,46 @@ class HomeView extends GetView<HomeController> {
         ),
       );
 
+  _saveWidget() => GetBuilder<HomeController>(
+      id: controller.updateSaveWidget,
+      builder: (c) {
+        return SingleChildScrollView(
+          child: FutureBuilder(
+            future: controller.getSave(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return SizedBox();
+              return Wrap(
+                children: snapshot.data!
+                    .map((e) => GestureDetector(
+                          onTap: () {
+                            controller.saveIndex =
+                                snapshot.data?.indexOf(e) ?? -1;
+                            controller.changgeRoot(jsonDecode(e.file ?? ""));
+                          },
+                          child: Container(
+                            color: Colors.transparent,
+                            margin: const EdgeInsets.only(left: 10, right: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(e.text ?? ""),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                _dynamicWidget(
+                                    context, jsonDecode(e.file ?? "")),
+                                _divider()
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              );
+            },
+          ),
+        );
+      });
+
   _leftWidget() => GetBuilder<HomeController>(
       id: controller.updateDynamicWidget,
       builder: (c) {
@@ -507,11 +616,14 @@ class HomeView extends GetView<HomeController> {
                         //   color: getRandColor(index),
                         //   size: 55,
                         // ),
-                        Image.asset(
-                          Config.ASSETS_IMG + (item?.icon ?? ""),
-                          width: 55,
-                          height: 55,
-                        ),
+                        item?.icon?.isEmpty ?? false
+                            ? Image.asset(
+                                Config.ASSETS_IMG + (item?.icon ?? ""),
+                                width: 55,
+                                height: 55,
+                              )
+                            : Container(),
+                        sizeWidth10,
                         Text(item?.text ?? "",
                             style: const TextStyle(fontSize: 18))
                       ],
@@ -541,6 +653,7 @@ class HomeView extends GetView<HomeController> {
                                             width: 20,
                                             height: 20,
                                           ),
+                                          sizeWidth10,
                                           Text(child.text ?? "",
                                               style: const TextStyle(
                                                   fontSize: 16,

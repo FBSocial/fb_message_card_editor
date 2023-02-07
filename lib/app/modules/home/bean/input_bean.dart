@@ -57,7 +57,16 @@ class InputChild {
   factory InputChild.fromJson(Map<String, dynamic> json) => InputChild(
         type: json["type"],
         text: json["text"],
-        icon: json["text"],
+        icon: json["icon"],
         file: json["file"],
       );
+
+  Map toJson() {
+    Map map = Map();
+    map["type"] = type;
+    map["text"] = text;
+    map["icon"] = icon;
+    map["file"] = file;
+    return map;
+  }
 }

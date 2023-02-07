@@ -1,16 +1,17 @@
 import 'dart:convert';
-import 'dart:math';
 
+import 'package:clipboard/clipboard.dart';
+import 'package:cross_file/cross_file.dart';
+import 'package:date_format/date_format.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
-import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
+import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:json_editor/json_editor.dart';
-import 'package:clipboard/clipboard.dart';
-
-import 'package:cross_file/cross_file.dart';
+import 'package:lib_utils/config/config.dart';
+import 'package:lib_utils/config/sp_service.dart';
 
 import '../../../../http/upload/upload.dart';
 
@@ -21,8 +22,10 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   String updateItemList = 'updateItemList';
 
   String updateImage = 'updateImage';
+  String updateSaveWidget = 'updateSaveWidget';
 
   Map<String, dynamic>? showMap;
+  String? mPreViewTitle;
   List<InputItem>? showItemList;
   String? uploadImageUrl;
   DynamicWidgetContent? dynamicWidgetContent;
@@ -77,6 +80,56 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     return result;
   }
 
+  Future<List<InputChild>> getSave() async {
+    final jsonStr = SpService.instance.getString(SP.userSaveMasterPlate);
+    List<InputChild> result = [];
+    if (jsonStr != null && jsonStr.isNotEmpty) {
+      Map json = jsonDecode(jsonStr);
+      if (json.containsKey('children')) {
+        List temp = json["children"];
+        for (var element in temp) {
+          InputChild inputChild = InputChild.fromJson(element);
+          result.add(inputChild);
+        }
+      }
+    }
+    return result;
+  }
+
+  int saveIndex = -1;
+
+  save() async {
+    List<InputChild> childList = await getSave();
+    childList ??= [];
+    InputChild inputChild;
+    if (saveIndex >= 0) {
+      inputChild = childList[saveIndex];
+      inputChild.file = jsonEncode(showMap);
+      childList.removeAt(saveIndex);
+      childList.insert(saveIndex, inputChild);
+    } else {
+      inputChild = InputChild(
+          file: jsonEncode(showMap),
+          text: "创建于 ${formatDate(DateTime.now(), [
+                yyyy,
+                "年".tr,
+                m,
+                "月".tr,
+                d,
+                "日 ".tr,
+                HH,
+                ":",
+                nn
+              ])}");
+      childList.add(inputChild);
+    }
+    Map<String, dynamic> result = {};
+    result['children'] = childList;
+    SpService.instance.setString(SP.userSaveMasterPlate, jsonEncode(result));
+
+    update([updateSaveWidget]);
+  }
+
   Future<Map<String, dynamic>?> getMasterPlateFile(String file) async {
     String data = await rootBundle.loadString("$jsonPath/$file");
     Map<String, dynamic>? temp = jsonDecode(data);
@@ -116,6 +169,11 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     EasyLoading.showToast('敬请期待');
   }
 
+  logout() async {
+    Global.user = LocalUser();
+    Config.token = '';
+  }
+
   removeIndex(int index) {
     dynamicWidgetContent?.children?.removeAt(index);
     showMap = dynamicWidgetContent?.toJson();
@@ -126,6 +184,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     Map<String, dynamic>? temp = jsonDecode(element.toString());
     if (temp.toString().hashCode != showMap.toString().hashCode) {
       showMap = temp;
+      dynamicWidgetContent = DynamicWidgetContent.fromJson(showMap ?? {});
       update([updateDynamicWidget, updateShowJsonMap]);
     }
   }
@@ -181,7 +240,14 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     } finally {
       EasyLoading.dismiss();
     }
-    update([updateDynamicWidget, updateShowJsonMap,updateImage]);
+    update([updateDynamicWidget, updateShowJsonMap, updateImage]);
+  }
+
+  void replease(int oldIndex, int newIndex) {
+    final topic = dynamicWidgetContent?.children!.removeAt(oldIndex);
+    dynamicWidgetContent?.children!.insert(newIndex, topic!);
+    showMap = dynamicWidgetContent?.toJson();
+    update([updateDynamicWidget, updateShowJsonMap]);
   }
 }
 
