@@ -2,25 +2,28 @@ import 'dart:async';
 
 import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:fb_message_card_editor/app/routes/app_pages.dart';
+import 'package:fb_message_card_editor/desktop/utils/web_util/web_util.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fb_message_card_editor/desktop/utils/web_util/web_util.dart';
-import 'package:lib_utils/config/sp_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:lib_net/src/api/user_api.dart' as user;
-import 'captcha_state.dart';
 import 'package:lib_utils/config/config.dart';
+import 'package:lib_utils/config/sp_service.dart';
+
+import 'captcha_state.dart';
 
 class CaptchaLogic extends GetxController {
+  String updateCountWidget = 'updateCountWidget';
+
   final CaptchaState state = CaptchaState();
-  final TextEditingController captchaController = TextEditingController();
+  TextEditingController? captchaController;
   final int _limitLength = 6;
   int count = 60;
   Timer? _countTimer;
   bool enableReSend = false;
-  String? mobile;
+  String mobile;
   late FocusNode node;
 
   Rx<String> codeRequestQueue = Rx<String>('');
@@ -32,6 +35,7 @@ class CaptchaLogic extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    captchaController = TextEditingController();
     node = FocusNode();
     node.requestFocus();
     worker = debounce<void>(codeRequestQueue, doRequest,
@@ -39,11 +43,17 @@ class CaptchaLogic extends GetxController {
     startCount();
   }
 
-  void getCaptcha(String mobile) {
-    this.mobile = mobile;
+  @override
+  void onClose() {
+    super.onClose();
+    captchaController?.dispose();
+    _countTimer?.cancel();
+  }
+
+  void getCaptcha() {
     if (!enableReSend) return;
     enableReSend = false;
-    UserApi.sendCaptcha(mobile, '', '86').then((res) {
+    UserApi.sendCaptcha(this.mobile, '', '86').then((res) {
       EasyLoading.showSuccess('验证码已发送');
       startCount();
     }).catchError((e) {
@@ -60,6 +70,7 @@ class CaptchaLogic extends GetxController {
         enableReSend = true;
         _countTimer?.cancel();
       }
+      update([updateCountWidget]);
     });
   }
 
@@ -75,8 +86,8 @@ class CaptchaLogic extends GetxController {
       EasyLoading.show();
       FocusScope.of(Get.context!).unfocus();
       final resultMap = await UserApi.login(
-        mobile!,
-        captchaController.text,
+        mobile,
+        captchaController?.text ?? "",
         'web',
         '',
         thirdParty: '',

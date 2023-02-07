@@ -4,6 +4,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:cross_file/cross_file.dart';
 import 'package:date_format/date_format.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
+import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,17 +157,21 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   sendToMe() async {
-    EasyLoading.showToast('敬请期待');
+    // EasyLoading.showToast('敬请期待');
 
-    // var chat = await UserApi.getChatId();
-    // print('chat:$chat');
-    //
-    // var result = await UserApi.sendPreView(chat['id'], '4321');
-    // print('result:$result');
+    var chat = await UserApi.getChatId();
+    print('chat:$chat');
+
+    var result = await UserApi.sendPreView(chat['id'], showMap!);
+    print('result:$result');
+
+    EasyLoading.showSuccess('发送成功');
   }
 
-  sendToGuild() {
-    EasyLoading.showToast('敬请期待');
+  sendToGuild() async {
+    var result = await UserApi.sendPreView(436889889649201152, showMap!);
+    print('result:$result');
+    EasyLoading.showSuccess('发送成功');
   }
 
   logout() async {

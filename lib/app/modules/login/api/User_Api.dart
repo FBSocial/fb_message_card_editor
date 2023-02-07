@@ -1,6 +1,9 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:fb_message_card_editor/http/http_utils.dart';
-import 'package:dio/dio.dart';
+
 import 'fb_encryption.dart';
 
 class UserApi {
@@ -39,19 +42,21 @@ class UserApi {
         showDefaultErrorToast: true,
         options: Options(contentType: Headers.formUrlEncodedContentType),
         data: {
-          "user_id": Global.user.id,
+          "user_id": int.parse(Global.user.id),
         });
   }
 
-  static Future sendPreView(num chat_id, String json) {
+  static Future sendPreView(num chat_id, Map json) {
     return Http.request(
         'https://a1-newtest.fanbook.mobi/api/bot/d38d0bf1f449f8f08181b5b678a8123fdbbcc86d4b901c10377b3d57946f2184b9dec5005c6398b1aa6c4024ec29052e/sendMessage',
         showDefaultErrorToast: true,
         isBody: true,
-        options: Options(contentType: Headers.formUrlEncodedContentType),
+        options: Options(contentType: Headers.jsonContentType),
         data: {
           "chat_id": chat_id,
-          "text": json,
+          "type": "task",
+          "text": jsonEncode({'type': 'task', 'content': json}),
+          "parse_mode": "Fanbook",
         });
   }
 }

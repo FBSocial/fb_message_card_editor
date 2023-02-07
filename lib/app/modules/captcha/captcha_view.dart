@@ -1,20 +1,14 @@
-import 'dart:async';
-
 import 'package:fb_message_card_editor/app/modules/login/LandscapeLoginWrap.dart';
-import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:fb_message_card_editor/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:just_throttle_it/just_throttle_it.dart';
 
 import 'captcha_logic.dart';
 
-class CaptchaPage  extends GetView<CaptchaLogic> {
-  String? mobile;
-
-  CaptchaPage(this.mobile);
+class CaptchaPage extends GetView<CaptchaLogic> {
+  CaptchaPage();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +59,7 @@ class CaptchaPage  extends GetView<CaptchaLogic> {
             SizedBox(
               height: isLandscape ? 8 : 12,
             ),
-            Text('验证码已发送至 +%s %s'.trArgs(["86", mobile.toString()]),
+            Text('验证码已发送至 +%s %s'.trArgs(["86", controller.mobile.toString()]),
                 style: Theme.of(context)
                     .textTheme
                     .bodyText1
@@ -110,27 +104,31 @@ class CaptchaPage  extends GetView<CaptchaLogic> {
                       autofocus: true,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: controller.enableReSend
-                        ? GestureDetector(
-                            onTap: () {
-                              Throttle.seconds(1, () {
-                                controller.getCaptcha(mobile!);
-                              });
-                            },
-                            child: Text(
-                              '重新发送'.tr,
-                              style: TextStyle(
-                                  color: appThemeData.primaryColor,
-                                  fontSize: 14),
-                            ),
-                          )
-                        : Text('${controller.count} s',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: appThemeData.primaryColor)),
-                  )
+                  GetBuilder<CaptchaLogic>(
+                      id: controller.updateCountWidget,
+                      builder: (controller) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 16),
+                          child: controller.enableReSend
+                              ? GestureDetector(
+                                  onTap: () {
+                                    Throttle.seconds(1, () {
+                                      controller.getCaptcha();
+                                    });
+                                  },
+                                  child: Text(
+                                    '重新发送'.tr,
+                                    style: TextStyle(
+                                        color: appThemeData.primaryColor,
+                                        fontSize: 14),
+                                  ),
+                                )
+                              : Text('${controller.count} s',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: appThemeData.primaryColor)),
+                        );
+                      }),
                 ],
               ),
             ),

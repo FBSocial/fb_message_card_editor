@@ -283,12 +283,98 @@ class HomeView extends GetView<HomeController> {
 
   _deleteBtn() => buildMaterialButton('清空', controller.removeAll);
 
-  _sendToMeBtn() => buildMaterialButton('向我发送预览', controller.sendToMe);
+  _sendToMeBtn() => buildMaterialButton('向我发送预览', _sendToMeDialog);
 
   _saveBtn() => buildMaterialButton('保存', controller.save);
 
-  _sendToGuildBtn() => buildMaterialButton('发送到服务器', controller.sendToGuild,
+  _sendToGuildBtn() => buildMaterialButton('发送到服务器', _sendToGuildDialog,
       bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
+
+  _sendToGuildDialog() => showDialog<Null>(
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: const Text('发送到服务器'),
+                content: Container(
+                  color: Colors.white,
+                  width: 300,
+                  height: 440,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text('发送到，1926服务器，卡片编辑器频道'),
+                      const SizedBox(height: 10),
+                      Image.asset(
+                        "${Config.ASSETS_IMG}invite.jpg",
+                        width: 240,
+                        height: 360,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          buildMaterialButton('取消', () {
+                            Navigator.pop(Get.context!);
+                          }),
+                          Expanded(child: Container()),
+                          buildMaterialButton('立即发送', () async {
+                            await controller.sendToGuild();
+                            Navigator.pop(context);
+                          },
+                              bgColor: const Color(0xFF198CFE),
+                              txtColor: Colors.white)
+                        ],
+                      )
+                    ],
+                  ),
+                ));
+          }).then((val) {
+        print(val);
+      });
+
+  _sendToMeDialog() => showDialog<Null>(
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: const Text('向我发送预览'),
+                content: Container(
+                  color: Colors.white,
+                  width: 300,
+                  height: 440,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text('请先加入服务器'),
+                      const SizedBox(height: 10),
+                      Image.asset(
+                        "${Config.ASSETS_IMG}invite.jpg",
+                        width: 240,
+                        height: 360,
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          buildMaterialButton('取消', () {
+                            Navigator.pop(Get.context!);
+                          }),
+                          Expanded(child: Container()),
+                          buildMaterialButton('已经加入，立即发送', () async {
+                            await controller.sendToMe();
+                            Navigator.pop(context);
+                          },
+                              bgColor: const Color(0xFF198CFE),
+                              txtColor: Colors.white)
+                        ],
+                      )
+                    ],
+                  ),
+                ));
+          }).then((val) {
+        print(val);
+      });
 
   _logout() => buildMaterialButton('退出登录', () async {
         showDialog<Null>(

@@ -1,6 +1,3 @@
-
-import 'package:fb_message_card_editor/app/modules/captcha/captcha_logic.dart';
-import 'package:fb_message_card_editor/app/modules/captcha/captcha_view.dart';
 import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:fb_message_card_editor/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
@@ -22,9 +19,7 @@ class LoginLogic extends GetxController {
       return;
     }
     UserApi.sendCaptcha(phone, 'web', '86').then((value) {
-      Get.put(CaptchaLogic(phone));
-      Get.to(()=>CaptchaPage(phone));
+      Get.toNamed(Routes.CAPTCHA, arguments: phone);
     });
-
   }
 }

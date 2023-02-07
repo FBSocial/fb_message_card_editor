@@ -5,6 +5,8 @@ import 'captcha_logic.dart';
 class CaptchaBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => CaptchaLogic(''));
+    Get.lazyPut<CaptchaLogic>(() {
+      return CaptchaLogic(Get.arguments);
+    });
   }
 }
