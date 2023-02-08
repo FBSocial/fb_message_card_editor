@@ -598,7 +598,11 @@ class HomeView extends GetView<HomeController> {
       child: TabBarView(
         controller: controller.tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: [_materWidget(), _leftWidget(), _saveWidget()],
+        children: [
+          _materWidget(),
+          _leftWidget(),
+          _saveWidget(),
+        ],
       ),
     );
 
