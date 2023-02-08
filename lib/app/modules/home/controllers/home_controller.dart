@@ -157,8 +157,6 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
   }
 
   sendToMe() async {
-    // EasyLoading.showToast('敬请期待');
-
     var chat = await UserApi.getChatId();
     print('chat:$chat');
 

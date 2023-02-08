@@ -685,7 +685,7 @@ class HomeView extends GetView<HomeController> {
       });
 
   _leftWidget() => GetBuilder<HomeController>(
-      id: controller.updateDynamicWidget,
+      id: controller.updateItemList,
       builder: (c) {
         return SizedBox(
           width: UniversalPlatform.isMacOS || kIsWeb ? 280 : 200,
