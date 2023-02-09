@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:fb_message_card_editor/app/routes/app_pages.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:fb_message_card_editor/http/strategy/http_mobile_strategy.dart';
 import 'package:fb_message_card_editor/http/strategy/http_strategy.dart';
@@ -11,15 +12,12 @@ import 'package:fb_message_card_editor/http/strategy/http_web_strategy.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart' as get_x;
-
 import 'package:lib_net/lib_net.dart' as net;
 import 'package:lib_net/lib_net.dart';
-
 import 'package:lib_utils/config/config.dart';
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/random_string.dart';
 import 'package:lib_utils/utils.dart';
-
 import 'package:uuid/uuid.dart';
 
 import 'interceptor/channel_mutex_interceptor.dart';
@@ -244,7 +242,16 @@ class Http {
           int.tryParse("${resData["message"]}") ??
           0;
       if (showDefaultErrorToast && errorMes.isNotEmpty) _showToast(errorMes);
-      // throw RequestArgumentError(code, url: path, message: errorMes);
+      throw RequestArgumentError(code, url: path, message: errorMes);
+    } on RequestArgumentError catch (e) {
+      if (quitCodeSet.contains(e.code) &&
+          path != '/api/user/ct' &&
+          path != '/api/user/login' &&
+          path != '/api/common/verification') {
+        // 退出登录
+        await _logout(error: e);
+      }
+      rethrow;
     } catch (e) {
       if (e is DioError) {
         final String error =
@@ -316,6 +323,15 @@ class Http {
           DioErrorType.receiveTimeout,
           DioErrorType.other,
         ].contains(error.type);
+  }
+
+  static _logout({required RequestArgumentError error}) {
+    if (get_x.Get.currentRoute == Routes.LOGIN) return;
+    Global.user = LocalUser();
+    Config.token = '';
+    unawaited(SpService.instance.setString(SP.token, ''));
+    unawaited(SpService.instance.setString(SP.userInfoSharedKey, ''));
+    get_x.Get.offAndToNamed(Routes.LOGIN);
   }
 }
 
@@ -426,3 +442,16 @@ final quitCodeSet = {
   ///授权超时
   1043,
 };
+
+class RequestArgumentError implements Exception {
+  final int code;
+  final String? url;
+  final String? message;
+
+  RequestArgumentError(this.code, {this.message = '', this.url});
+
+  @override
+  String toString() {
+    return "network error: $url $code";
+  }
+}

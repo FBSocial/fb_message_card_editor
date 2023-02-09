@@ -91,7 +91,8 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   List<GlobalKey> itenGlobalKeyList = [];
   OverlayEntry? mOverlayEntry;
-  int? currentIndex;
+  int currentIndex = -1;
+  bool currentIsImageWidget = false;
 
   Widget buildWidget() {
     try {
@@ -124,27 +125,29 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                     decoration: DottedDecoration(
                       color: Colors.blue,
                       shape: Shape.box,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
                     ),
                     child: child,
                   )
                 : child;
             Widget mouse = MouseHoverStatefulBuilder(
+                key: itemKey,
                 builder: (BuildContext context, bool hover) {
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    color: hover
-                        ? Colors.grey.withOpacity(0.2)
-                        : Colors.transparent,
-                    child: onItem,
-                  ),
-                  if (hover) _Decoration(itemKey, index, isImageWidget)
-                ],
-              );
-            });
+                  return Stack(
+                    children: <Widget>[
+                      Container(
+                        color: hover
+                            ? Colors.grey.withOpacity(0.2)
+                            : Colors.transparent,
+                        child: onItem,
+                      ),
+                      if (hover) _Decoration(itemKey, index, isImageWidget)
+                    ],
+                  );
+                });
+
             Widget ikey = Container(
-              padding: EdgeInsets.only(right: 40),
+              padding: const EdgeInsets.only(right: 40),
               key: ValueKey(columnChildren[index].hashCode),
               child: mouse,
             );
@@ -153,21 +156,24 @@ class _DynamicWidgetState extends State<DynamicWidget> {
           resultWidget.children!.clear();
           resultWidget.children!.addAll(mouseChildren);
           if (widget.canDrag) {
-            return ReorderableListView(
-              buildDefaultDragHandles: true,
-              children: resultWidget.children!,
-              onReorder: (int oldIndex, int newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                currentIndex = -1;
-                _remove();
-                if (widget.itemClick != null) {
-                  widget.itemClick!(OptType.replase, oldIndex, newIndex);
-                }
-                setState(() {});
-              },
-            );
+            return ScrollConfiguration(
+                behavior:
+                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                child: _scroll(ReorderableListView(
+                  buildDefaultDragHandles: true,
+                  children: resultWidget.children!,
+                  onReorder: (int oldIndex, int newIndex) {
+                    if (oldIndex < newIndex) {
+                      newIndex -= 1;
+                    }
+                    currentIndex = -1;
+                    _remove();
+                    if (widget.itemClick != null) {
+                      widget.itemClick!(OptType.replase, oldIndex, newIndex);
+                    }
+                    setState(() {});
+                  },
+                )));
           }
         }
         if (needPadding) {
@@ -190,6 +196,30 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     }
   }
 
+  _scroll(Widget child) {
+    return NotificationListener(
+        onNotification: (ScrollNotification notification) {
+          //开始滚动
+          if (notification is ScrollStartNotification) {
+            print("开始滚动");
+            _remove();
+          } else if (notification is ScrollUpdateNotification) {
+            // 更新滚动
+            print(
+                "正在滚动---总滚动的距离${notification.metrics.maxScrollExtent},----已经滚动的距离${notification.metrics.pixels}");
+          } else if (notification is ScrollEndNotification) {
+            //结束滚动
+            print("结束滚动");
+            if (currentIndex > -1) {
+              _showOverlayEntry(currentIndex, currentIsImageWidget);
+            }
+          }
+          // 返回值是防止冒泡， false是可以冒泡
+          return true;
+        },
+        child: child);
+  }
+
   _remove() {
     if (mOverlayEntry != null) {
       try {
@@ -202,37 +232,14 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   _Decoration(GlobalKey itemKey, int index, bool isImageWidget) {
     return Positioned(
-      key: itemKey,
       top: 0,
       left: 0,
       right: 0,
-      bottom: 10,
+      bottom: 0,
       child: GestureDetector(
         onTap: () {
-          _remove();
-          setState(() {
-            currentIndex = index;
-          });
-          GlobalKey item = itenGlobalKeyList[index];
-          // GlobalKey item = itemKey;
-          final RenderBox renderBox =
-              item.currentContext!.findRenderObject() as RenderBox;
-          Size size = renderBox.size;
-          Offset position = renderBox.localToGlobal(Offset.zero);
-          mOverlayEntry = OverlayEntry(builder: (context) {
-            return Stack(children: <Widget>[
-              Positioned(
-                  top: position.dy - 40,
-                  left: position.dx,
-                  child: _deleteItem(index)),
-              if (isImageWidget)
-                Positioned(
-                    top: position.dy - 40,
-                    left: position.dx + size.width - 40,
-                    child: _changeItem(index)),
-            ]);
-          });
-          Overlay.of(Get.context!)?.insert(mOverlayEntry!);
+          currentIsImageWidget = isImageWidget;
+          _showOverlayEntry(index, isImageWidget);
         },
         child: Container(
           decoration: DottedDecoration(
@@ -243,6 +250,34 @@ class _DynamicWidgetState extends State<DynamicWidget> {
         ),
       ),
     );
+  }
+
+  _showOverlayEntry(int index, bool isImageWidget) {
+    _remove();
+    setState(() {
+      currentIndex = index;
+    });
+    GlobalKey item = itenGlobalKeyList[index];
+    if (item.currentContext != null) {
+      final RenderBox renderBox =
+          item.currentContext!.findRenderObject() as RenderBox;
+      Size size = renderBox.size;
+      Offset position = renderBox.localToGlobal(Offset.zero);
+      mOverlayEntry = OverlayEntry(builder: (context) {
+        return Stack(children: <Widget>[
+          Positioned(
+              top: position.dy - 40,
+              left: position.dx,
+              child: _deleteItem(index)),
+          if (isImageWidget)
+            Positioned(
+                top: position.dy - 40,
+                left: position.dx + size.width - 40,
+                child: _changeItem(index)),
+        ]);
+      });
+      Overlay.of(Get.context!)?.insert(mOverlayEntry!);
+    }
   }
 
   _deleteItem(int index) => Container(

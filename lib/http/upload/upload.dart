@@ -10,12 +10,8 @@ import 'package:fb_message_card_editor/http/upload/cos_auth.dart';
 import 'package:fb_message_card_editor/http/upload/upload_api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart' as get_x;
-
-
-
 import 'package:lib_utils/config/sp_service.dart';
 import 'package:lib_utils/loggers.dart';
-
 import 'package:path/path.dart' as p;
 
 Dio _dio = Dio();
@@ -93,6 +89,7 @@ Future<String?> uploadFileIfNotExist(
     if (error is DioError &&
         error.response?.statusCode == HttpStatus.forbidden) {
       if (fileType == UploadType.video) return downloadUrl;
+      if (fileType == UploadType.headImage) return downloadUrl;
       // 如果 cos 信息超时，重新获取最新的认证信息
       await _getCosAuthFromServer();
       return uploadFileIfNotExist(
@@ -113,13 +110,6 @@ Future<String?> uploadFileIfNotExist(
           throw "上传文件失败%s-%s"
               .trArgs([res.statusCode.toString(), res.statusMessage!]);
         }
-        // final data = {
-        //   "key": key,
-        //   "success_action_status": '200',
-        //   "Signature": cosAuth.authorization,
-        //   "x-cos-security-token": cosAuth.token,
-        //   "file": bytes.buffer.toString(),
-        // };
       } catch (error) {
         // 如果 cos 信息超时，重新获取最新的认证信息
         if (error is DioError && error.response?.statusCode == 403) {
@@ -175,6 +165,7 @@ class UploadType {
   static String video = 'video';
   static String live = 'live';
   static String image = 'image';
+  static String headImage = 'headImage';
   static String audio = 'audio';
   static String unKnow = 'unknow';
 }

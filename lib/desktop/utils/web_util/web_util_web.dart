@@ -1,16 +1,11 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:async';
-import 'dart:convert';
-
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
-
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
-import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:cross_file/cross_file.dart';
 import 'package:fb_message_card_editor/desktop/js/cookie_utils.dart';
 import 'package:fb_message_card_editor/desktop/utils/web_util/web_util.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -299,11 +294,11 @@ class WebUtil implements WebUtilBase {
   //   });
   //   return completer.future.timeout(const Duration(seconds: 1));
   // }
-  //
-  // @override
-  // void refreshHtml() {
-  //   html.window.location.reload();
-  // }
+
+  @override
+  void refreshHtml() {
+    html.window.location.reload();
+  }
 
   @override
   void setCookie(
@@ -350,7 +345,8 @@ class WebUtil implements WebUtilBase {
   }
 
   @override
-  Future<Uint8List> compressImageFromElement(String blobPath, {double quality = 0.6}) {
+  Future<Uint8List> compressImageFromElement(String blobPath,
+      {double quality = 0.6}) {
     // TODO: implement compressImageFromElement
     throw UnimplementedError();
   }
@@ -378,7 +374,6 @@ class WebUtil implements WebUtilBase {
     throw UnimplementedError();
   }
 
-
   @override
   Future<Asset> getImageInfo(file) {
     // TODO: implement getImageInfo
@@ -397,13 +392,9 @@ class WebUtil implements WebUtilBase {
   }
 
   @override
-  void pushLocalNotification(String title, String body, Map<String, String> extra) {
+  void pushLocalNotification(
+      String title, String body, Map<String, String> extra) {
     // TODO: implement pushLocalNotification
-  }
-
-  @override
-  void refreshHtml() {
-    // TODO: implement refreshHtml
   }
 
   @override

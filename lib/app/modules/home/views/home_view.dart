@@ -632,9 +632,7 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(e.text ?? ""),
-                                SizedBox(
-                                  height: 10,
-                                ),
+                                sizeHeight10,
                                 _dynamicWidget(context, snapshot.data),
                                 _divider()
                               ],
@@ -671,9 +669,7 @@ class HomeView extends GetView<HomeController> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(e.text ?? ""),
-                                SizedBox(
-                                  height: 10,
-                                ),
+                                sizeHeight10,
                                 _dynamicWidget(
                                     context, jsonDecode(e.file ?? "")),
                                 _divider()

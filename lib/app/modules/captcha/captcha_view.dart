@@ -68,7 +68,7 @@ class CaptchaPage extends GetView<CaptchaLogic> {
               height: 32,
             ),
             Container(
-              height: isLandscape ? 40 : 48,
+              height: 48,
               decoration: BoxDecoration(
                 // color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(isLandscape ? 4 : 6),
@@ -91,7 +91,7 @@ class CaptchaPage extends GetView<CaptchaLogic> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
-                          vertical: 13,
+                          vertical: 9,
                         ), // 实现输入框文本居中，mac、windows需要设置不同的偏移量
                         border: InputBorder.none,
                         hintText: '输入验证码'.tr,

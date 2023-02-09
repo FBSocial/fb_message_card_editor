@@ -1,4 +1,5 @@
 import 'package:fb_message_card_editor/app/routes/app_pages.dart';
+import 'package:fb_message_card_editor/desktop/js/web_cookies.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:fb_message_card_editor/http/http_utils.dart';
 import 'package:flutter/foundation.dart';
@@ -40,6 +41,14 @@ class SplashController extends GetxController {
             packageName: 'web',
             buildNumber: '20')
         : await PackageInfo.fromPlatform();
+
+    if (kIsWeb) {
+      // Config.token = webUtil.getCookie('token');
+      WebCookiesUtils.getCookie('');
+    } else {
+      Config.token = SpService.instance.getString(SP.token);
+    }
+
     await Global.user.read();
     Config.initEnv();
     Config.env = Env.newtest;

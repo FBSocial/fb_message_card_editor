@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:fb_message_card_editor/app/modules/login/api/User_Api.dart';
 import 'package:fb_message_card_editor/app/routes/app_pages.dart';
-import 'package:fb_message_card_editor/desktop/utils/web_util/web_util.dart';
+import 'package:fb_message_card_editor/desktop/js/web_cookies.dart';
 import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +102,9 @@ class CaptchaLogic extends GetxController {
       EasyLoading.dismiss();
 
       if (kIsWeb) {
-        // _setCookie(resultMap['sign']);
+        _setCookie(resultMap['sign']);
+      } else {
+        unawaited(SpService.instance.setString(SP.token, resultMap['sign']));
       }
       Get.toNamed(Routes.HOME);
     } catch (e) {
@@ -116,16 +118,17 @@ class CaptchaLogic extends GetxController {
     final int day =
         (SpService.instance.getBool(SP.rememberPwd) ?? false) ? 30 : 1;
     const tokenKey = 'token';
+    WebCookiesUtils.setCookie(tokenKey, token);
     // 设置当前域名token
-    webUtil.setCookie(tokenKey, token, secure: !Config.isDebug, expires: day);
+    // webUtil.setCookie(tokenKey, token, secure: !Config.isDebug, expires: day);
     // 设置一级域名token
-    webUtil.setCookie(
-      tokenKey,
-      token,
-      secure: !Config.isDebug,
-      domain: '.${Config.webDomain}',
-      path: '/',
-      expires: day,
-    );
+    // webUtil.setCookie(
+    //   tokenKey,
+    //   token,
+    //   secure: !Config.isDebug,
+    //   domain: '.${Config.webDomain}',
+    //   path: '/',
+    //   expires: day
+    // );
   }
 }

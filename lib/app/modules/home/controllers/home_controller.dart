@@ -188,7 +188,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
     if (temp.toString().hashCode != showMap.toString().hashCode) {
       showMap = temp;
       dynamicWidgetContent = DynamicWidgetContent.fromJson(showMap ?? {});
-      update([updateDynamicWidget, updateShowJsonMap]);
+      update([updateDynamicWidget]);
     }
   }
 
@@ -231,13 +231,15 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
       Uint8List byte = await file.readAsBytes();
       String? avatar = await uploadFileIfNotExist(
           bytes: byte, fileType: "headImage", filename: file.name);
-      uploadImageUrl = avatar;
-      print('avatar:$avatar');
-      String? value = dynamicWidgetContent?.children![index];
-      Map json = jsonDecode(value!);
-      json['param']['image'] = avatar;
-      dynamicWidgetContent?.children![index] = jsonEncode(json);
-      showMap = dynamicWidgetContent?.toJson();
+      if (avatar != null && avatar.isNotEmpty) {
+        uploadImageUrl = avatar;
+        print('avatar:$avatar');
+        String? value = dynamicWidgetContent?.children![index];
+        Map json = jsonDecode(value!);
+        json['param']['image'] = avatar;
+        dynamicWidgetContent?.children![index] = jsonEncode(json);
+        showMap = dynamicWidgetContent?.toJson();
+      }
     } catch (e) {
       print(e);
     } finally {
