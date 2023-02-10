@@ -50,6 +50,7 @@ const _lightGray = Color(0xFF8F959E);
 
 final ThemeData appThemeData = ThemeData(
   primarySwatch: _primarySwatch,
+  fontFamily: "SourceHanSansCN",
   visualDensity: VisualDensity.adaptivePlatformDensity,
   backgroundColor: Colors.white,
   scaffoldBackgroundColor: _backgroundGray,

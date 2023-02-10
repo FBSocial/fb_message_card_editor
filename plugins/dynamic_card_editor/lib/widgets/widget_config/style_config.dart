@@ -90,5 +90,7 @@ const colors2 = [Color(0xff4E83FD), Color(0xff3371FF)];
 const colors3 = [Color(0xffF5F5F8), Color(0xffE9EAEC)];
 const colors4 = [Color(0xff6179F2), color4];
 
-const textStyle1 = TextStyle(color: color1, fontSize: 14, height: 1.25);
-const textStyle2 = TextStyle(color: color4, fontSize: 14, height: 1.25);
+const textStyle1 = TextStyle(
+    color: color1, fontSize: 14, height: 1.25, fontFamily: "SourceHanSansCN");
+const textStyle2 = TextStyle(
+    color: color4, fontSize: 14, height: 1.25, fontFamily: "SourceHanSansCN");

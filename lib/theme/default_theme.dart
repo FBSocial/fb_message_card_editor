@@ -87,6 +87,7 @@ class DefaultTheme {
             MaterialStateProperty.resolveWith((states) => Colors.transparent),
       )),
       textSelectionTheme: TextSelectionThemeData(cursorColor: primaryColor),
+      fontFamily: "SourceHanSansCN",
       appBarTheme: AppBarTheme(
         color: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black, size: 20),

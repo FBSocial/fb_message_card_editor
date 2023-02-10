@@ -6,8 +6,10 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:fb_message_card_editor/app/modules/home/bean/input_bean.dart';
+import 'package:fb_message_card_editor/app/modules/home/bindings/delete_notify.dart';
 import 'package:fb_message_card_editor/app/modules/home/views/card_preview_widget.dart';
 import 'package:fb_message_card_editor/app/routes/app_pages.dart';
+import 'package:fb_message_card_editor/theme/app_theme.dart';
 import 'package:fb_message_card_editor/theme/const.dart';
 import 'package:fb_message_card_editor/util/config.dart';
 import 'package:file_picker/file_picker.dart';
@@ -52,7 +54,7 @@ class HomeView extends GetView<HomeController> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-              title: const Text('更换图片'),
+              title: Text('更换图片', style: appThemeData.textTheme.titleMedium),
               content: Container(
                 color: Colors.white,
                 width: 440,
@@ -61,7 +63,7 @@ class HomeView extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('上传图片'),
+                      Text('上传图片', style: appThemeData.textTheme.titleMedium),
                       const SizedBox(height: 10),
                       GetBuilder<HomeController>(
                           id: controller.updateImage,
@@ -86,10 +88,11 @@ class HomeView extends GetView<HomeController> {
                                     controller.uploadImageUrl != null) ...[
                                   sizeHeight8,
                                   GestureDetector(
-                                    child: const Text(
+                                    child: Text(
                                       '重新上传',
-                                      style: TextStyle(
-                                          fontSize: 14, color: Colors.blue),
+                                      style: appThemeData.textTheme.titleMedium
+                                          ?.copyWith(
+                                              fontSize: 14, color: Colors.blue),
                                     ),
                                     onTap: () async {
                                       xfile = null;
@@ -154,15 +157,17 @@ class HomeView extends GetView<HomeController> {
               onTap: () async {
                 _choiceFilepick(index);
               },
-              child: const Text(
+              child: Text(
                 '拖拽文件至此，或 选择文件上传',
-                style: TextStyle(fontSize: 14, color: Colors.blue),
+                style: appThemeData.textTheme.titleMedium
+                    ?.copyWith(fontSize: 14, color: Colors.blue),
               ),
             ),
             sizeHeight8,
-            const Text(
+            Text(
               '支持 JPEG/PNG/GIF 格式，大小不超过 10 MB',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: appThemeData.textTheme.titleMedium
+                  ?.copyWith(fontSize: 14, color: Colors.grey),
             ),
           ],
         ),
@@ -274,7 +279,7 @@ class HomeView extends GetView<HomeController> {
               )
             ]),
             const SizedBox(height: 10),
-            const Text('卡片预览'),
+            Text('卡片预览', style: appThemeData.textTheme.titleMedium),
             _dividerW(),
             Expanded(child: child)
           ],
@@ -295,7 +300,8 @@ class HomeView extends GetView<HomeController> {
           barrierDismissible: true,
           builder: (BuildContext context) {
             return AlertDialog(
-                title: const Text('发送到服务器'),
+                title:
+                    Text('发送到服务器', style: appThemeData.textTheme.titleMedium),
                 content: Container(
                   color: Colors.white,
                   width: 300,
@@ -303,7 +309,8 @@ class HomeView extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('发送到，1926服务器，卡片编辑器频道'),
+                      Text('发送到，1926服务器，卡片编辑器频道',
+                          style: appThemeData.textTheme.titleMedium),
                       const SizedBox(height: 10),
                       Image.asset(
                         "${Config.ASSETS_IMG}invite.jpg",
@@ -338,7 +345,8 @@ class HomeView extends GetView<HomeController> {
           barrierDismissible: true,
           builder: (BuildContext context) {
             return AlertDialog(
-                title: const Text('向我发送预览'),
+                title:
+                    Text('向我发送预览', style: appThemeData.textTheme.titleMedium),
                 content: Container(
                   color: Colors.white,
                   width: 300,
@@ -346,7 +354,8 @@ class HomeView extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Text('请先加入服务器'),
+                      Text('请先加入服务器',
+                          style: appThemeData.textTheme.titleMedium),
                       const SizedBox(height: 10),
                       Image.asset(
                         "${Config.ASSETS_IMG}invite.jpg",
@@ -382,7 +391,8 @@ class HomeView extends GetView<HomeController> {
             barrierDismissible: true,
             builder: (BuildContext context) {
               return AlertDialog(
-                  title: const Text('退出登录'),
+                  title:
+                      Text('退出登录', style: appThemeData.textTheme.titleMedium),
                   actions: [],
                   content: Container(
                     color: Colors.white,
@@ -392,7 +402,8 @@ class HomeView extends GetView<HomeController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('是否退出登录'),
+                          Text('是否退出登录',
+                              style: appThemeData.textTheme.titleMedium),
                           const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -435,7 +446,8 @@ class HomeView extends GetView<HomeController> {
         onPressed: onPress,
         child: Text(
           text,
-          style: TextStyle(fontSize: 14, color: txtColor),
+          style: appThemeData.textTheme.titleMedium
+              ?.copyWith(fontSize: 14, color: txtColor),
         ),
       );
 
@@ -527,7 +539,7 @@ class HomeView extends GetView<HomeController> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('卡片编辑'),
+                Text('卡片编辑', style: appThemeData.textTheme.titleMedium),
                 Row(
                   children: [
                     IconButton(
@@ -576,13 +588,13 @@ class HomeView extends GetView<HomeController> {
         child: TabBar(
           indicatorWeight: 0,
           tabs: controller.spList
-              .map((e) =>
-                  Tab(child: Text(e, style: const TextStyle(fontSize: 14))))
+              .map((e) => Tab(
+                  child: Text(e,
+                      style: Theme.of(Get.context!).textTheme.titleSmall)))
               .toList(),
           labelColor: Colors.blueAccent,
           unselectedLabelColor: const Color(0xFF5C6273).withOpacity(0.8),
-          unselectedLabelStyle:
-              const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+          unselectedLabelStyle: Theme.of(Get.context!).textTheme.titleSmall,
           controller: controller.tabController,
           indicatorSize: TabBarIndicatorSize.label,
           indicator: const UnderlineTabIndicator(
@@ -624,6 +636,7 @@ class HomeView extends GetView<HomeController> {
                           onTap: () {
                             controller.saveIndex = -1;
                             controller.changgeRoot(snapshot.data!);
+                            RemoveOverlayNotifier.instance.emit(RemoveOverlayEvent(remove: true));
                           },
                           child: Container(
                             color: Colors.transparent,
@@ -631,7 +644,8 @@ class HomeView extends GetView<HomeController> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(e.text ?? ""),
+                                Text(e.text ?? "",
+                                    style: appThemeData.textTheme.titleMedium),
                                 sizeHeight10,
                                 _dynamicWidget(context, snapshot.data),
                                 _divider()
@@ -661,6 +675,7 @@ class HomeView extends GetView<HomeController> {
                             controller.saveIndex =
                                 snapshot.data?.indexOf(e) ?? -1;
                             controller.changgeRoot(jsonDecode(e.file ?? ""));
+                            RemoveOverlayNotifier.instance.emit(RemoveOverlayEvent(remove: true));
                           },
                           child: Container(
                             color: Colors.transparent,
@@ -668,7 +683,10 @@ class HomeView extends GetView<HomeController> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(e.text ?? ""),
+                                Text(
+                                  e.text ?? "",
+                                  style: appThemeData.textTheme.bodyText1,
+                                ),
                                 sizeHeight10,
                                 _dynamicWidget(
                                     context, jsonDecode(e.file ?? "")),
@@ -711,7 +729,8 @@ class HomeView extends GetView<HomeController> {
                             : Container(),
                         sizeWidth10,
                         Text(item?.text ?? "",
-                            style: const TextStyle(fontSize: 18))
+                            style: appThemeData.textTheme.bodyText1!
+                                .copyWith(fontSize: 18))
                       ],
                     ),
                     if (item != null && item.children != null) ...[
@@ -741,9 +760,11 @@ class HomeView extends GetView<HomeController> {
                                           ),
                                           sizeWidth10,
                                           Text(child.text ?? "",
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.black87))
+                                              style: appThemeData
+                                                  .textTheme.bodyText1!
+                                                  .copyWith(
+                                                      fontSize: 16,
+                                                      color: Colors.black87))
                                         ],
                                       )),
                                 ))

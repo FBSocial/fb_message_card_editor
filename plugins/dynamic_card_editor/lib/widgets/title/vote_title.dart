@@ -58,7 +58,7 @@ class VoteTitleWidget extends StatelessWidget {
           child: Row(
             children: [
               Text(data.text ?? '',
-                  style: TextStyle(
+                  style: textStyle1.copyWith(
                     fontSize: 15,
                     color: textColor,
                     height: 1.25,

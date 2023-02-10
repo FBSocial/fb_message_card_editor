@@ -1,6 +1,8 @@
 import 'package:dotted_decoration/dotted_decoration.dart';
 import 'package:dynamic_card/dynamic_card.dart';
 import 'package:dynamic_card/widgets/title/vote_title.dart';
+import 'package:fb_message_card_editor/app/modules/home/bindings/delete_notify.dart';
+import 'package:fb_message_card_editor/theme/app_theme.dart';
 import 'package:fb_message_card_editor/util/mouse_hover_builder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ class DynamicWidget extends StatefulWidget {
   final bool onlyRead;
   final bool showMouse;
   final bool canDrag;
+  final bool removeOverlay;
 
   const DynamicWidget({
     Key? key,
@@ -25,6 +28,7 @@ class DynamicWidget extends StatefulWidget {
     this.canDrag = false,
     this.onlyRead = false,
     this.showMouse = false,
+    this.removeOverlay = false,
     this.itemClick,
   }) : super(key: key);
 
@@ -45,8 +49,15 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     json = widget.json ?? {};
     initialNode(json);
     widget.controller?._nodeCallback = getNode;
-
+    _remove();
+    initListener();
     super.initState();
+  }
+
+  initListener(){
+    RemoveOverlayNotifier.instance.listen((event) {
+      _remove();
+    });
   }
 
   void initialNode(Map json) {
@@ -118,33 +129,76 @@ class _DynamicWidgetState extends State<DynamicWidget> {
           for (int index = 0; index < columnChildren.length; index++) {
             GlobalKey itemKey = GlobalKey();
             itenGlobalKeyList.add(itemKey);
+
             Widget child = columnChildren[index];
             bool isImageWidget = child is ImageWidget;
+
+            Widget childContainer = Listener(
+                onPointerDown: (event) {
+                  currentIsImageWidget = isImageWidget;
+                  _showOverlayEntry(index, isImageWidget);
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(1),
+                  child: AbsorbPointer(
+                    absorbing: false,
+                    child: columnChildren[index],
+                  ),
+                ));
+
             Widget onItem = currentIndex == index
-                ? Container(
-                    decoration: DottedDecoration(
-                      color: Colors.blue,
-                      shape: Shape.box,
-                      borderRadius: const BorderRadius.all(Radius.circular(6)),
-                    ),
-                    child: child,
-                  )
-                : child;
-            Widget mouse = MouseHoverStatefulBuilder(
-                key: itemKey,
-                builder: (BuildContext context, bool hover) {
-                  return Stack(
-                    children: <Widget>[
-                      Container(
-                        color: hover
-                            ? Colors.grey.withOpacity(0.2)
-                            : Colors.transparent,
-                        child: onItem,
-                      ),
-                      if (hover) _Decoration(itemKey, index, isImageWidget)
-                    ],
-                  );
-                });
+                ? _dotted(childContainer)
+                : childContainer;
+
+            if (currentIndex == index && isImageWidget) {
+              onItem = Stack(
+                children: [
+                  onItem,
+                  Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: TextButton(
+                        child: Container(
+                          height: 30,
+                          color: Colors.black12.withOpacity(0.5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                '更换图片',
+                                style: appThemeData.textTheme.bodySmall
+                                    ?.copyWith(color: Colors.white),
+                              )
+                            ],
+                          ),
+                        ),
+                        onPressed: () {
+                          _remove();
+                          CardOnTapNotification(OptType.modifyImage, index)
+                              .dispatch(context);
+                        },
+                      ))
+                ],
+              );
+            }
+
+            Widget mouse = Container(
+              color: Colors.white,
+              child: MouseHoverStatefulBuilder(
+                  key: itemKey,
+                  builder: (BuildContext context, bool hover) {
+                    return Stack(
+                      children: <Widget>[
+                        hover ? _dotted(onItem) : onItem,
+                      ],
+                    );
+                  }),
+            );
 
             Widget ikey = Container(
               padding: const EdgeInsets.only(right: 40),
@@ -196,6 +250,17 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     }
   }
 
+  _dotted(Widget childContainer) {
+    return Container(
+      decoration: DottedDecoration(
+        color: Colors.blue,
+        shape: Shape.box,
+        borderRadius: const BorderRadius.all(Radius.circular(6)),
+      ),
+      child: childContainer,
+    );
+  }
+
   _scroll(Widget child) {
     return NotificationListener(
         onNotification: (ScrollNotification notification) {
@@ -205,8 +270,6 @@ class _DynamicWidgetState extends State<DynamicWidget> {
             _remove();
           } else if (notification is ScrollUpdateNotification) {
             // 更新滚动
-            print(
-                "正在滚动---总滚动的距离${notification.metrics.maxScrollExtent},----已经滚动的距离${notification.metrics.pixels}");
           } else if (notification is ScrollEndNotification) {
             //结束滚动
             print("结束滚动");
@@ -222,34 +285,13 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   _remove() {
     if (mOverlayEntry != null) {
+      currentIndex = -1;
       try {
         mOverlayEntry?.remove();
       } catch (e) {
         print(e);
       }
     }
-  }
-
-  _Decoration(GlobalKey itemKey, int index, bool isImageWidget) {
-    return Positioned(
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: GestureDetector(
-        onTap: () {
-          currentIsImageWidget = isImageWidget;
-          _showOverlayEntry(index, isImageWidget);
-        },
-        child: Container(
-          decoration: DottedDecoration(
-            color: Colors.blue,
-            shape: Shape.box,
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
-          ),
-        ),
-      ),
-    );
   }
 
   _showOverlayEntry(int index, bool isImageWidget) {
@@ -269,11 +311,11 @@ class _DynamicWidgetState extends State<DynamicWidget> {
               top: position.dy - 40,
               left: position.dx,
               child: _deleteItem(index)),
-          if (isImageWidget)
-            Positioned(
-                top: position.dy - 40,
-                left: position.dx + size.width - 40,
-                child: _changeItem(index)),
+          // if (isImageWidget)
+          //   Positioned(
+          //       top: position.dy - 40,
+          //       left: position.dx + size.width - 40,
+          //       child: _changeItem(index)),
         ]);
       });
       Overlay.of(Get.context!)?.insert(mOverlayEntry!);

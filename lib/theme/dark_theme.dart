@@ -15,6 +15,7 @@ class DarkTheme extends DefaultTheme {
 }
 
 final ThemeData darkTheme = ThemeData(
+    fontFamily: "SourceHanSansCN",
     brightness: Brightness.dark,
     primarySwatch: primaryColor,
     primaryColor: primaryColor,

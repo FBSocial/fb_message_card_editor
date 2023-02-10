@@ -41,6 +41,7 @@ final ThemeData webLightTheme = ThemeData(
     splashFactory: const NoSplashFactory(),
     toggleableActiveColor: primaryColor,
     hoverColor: Colors.transparent,
+    fontFamily: "SourceHanSansCN",
     appBarTheme: AppBarTheme(
       color: Colors.white,
       iconTheme: const IconThemeData(color: Colors.black, size: 20),

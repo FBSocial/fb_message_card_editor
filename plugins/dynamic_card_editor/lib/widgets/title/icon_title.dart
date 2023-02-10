@@ -91,7 +91,7 @@ class IconTitleWidget extends StatelessWidget {
               Expanded(
                 child: Text(
                   data.text ?? '',
-                  style: TextStyle(
+                  style: textStyle1.copyWith(
                     fontSize: 15,
                     color: textColor,
                     fontWeight: fontWeight,
@@ -108,7 +108,7 @@ class IconTitleWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 4, top: 1),
                   child: Text(
                     '进行中',
-                    style: TextStyle(
+                    style: textStyle1.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF6179F2)),
@@ -121,7 +121,7 @@ class IconTitleWidget extends StatelessWidget {
                   margin: EdgeInsets.only(right: 4, top: 1),
                   child: Text(
                     '已结束',
-                    style: TextStyle(
+                    style: textStyle1.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: const Color(0xFF8F959E)),

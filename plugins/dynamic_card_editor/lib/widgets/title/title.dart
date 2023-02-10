@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../widget_nodes/all.dart';
 import '../all.dart';
 
@@ -21,7 +22,7 @@ class TitleWidget extends StatelessWidget {
             topLeft: Radius.circular(6), topRight: Radius.circular(6)),
       ),
       child: Text(data.text ?? '',
-          style: TextStyle(
+          style: textStyle1.copyWith(
             fontSize: 15,
             color: color1,
             height: 1.25,

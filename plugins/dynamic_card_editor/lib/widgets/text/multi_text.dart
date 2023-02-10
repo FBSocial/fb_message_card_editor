@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
+
 import '../../widget_nodes/all.dart';
 import '../all.dart';
-import 'package:flutter/material.dart';
 
 class MultiTextWidget extends StatelessWidget {
   final MultiTextData data;
   final TempWidgetConfig? config;
 
-  const MultiTextWidget({Key? key, required this.data, this.config}) : super(key: key);
+  const MultiTextWidget({Key? key, required this.data, this.config})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class MultiTextWidget extends StatelessWidget {
                                   ? FontWeight.normal
                                   : FontWeight.bold),
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          // overflow: TextOverflow.ellipsis,
                         ),
                       );
                     }),

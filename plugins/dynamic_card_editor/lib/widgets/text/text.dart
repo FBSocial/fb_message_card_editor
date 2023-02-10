@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+
 import '../../widget_nodes/all.dart';
 import '../all.dart';
-import 'package:flutter/material.dart';
 
 class TextWidget extends StatelessWidget {
   final TextData data;
@@ -16,7 +17,7 @@ class TextWidget extends StatelessWidget {
         ? Text(
             data.text ?? '',
             maxLines: data.line == 0 ? 99 : 1,
-            style: TextStyle(
+            style: textStyle1.copyWith(
               fontSize: 14,
               height: 1.5,
               color: data.type == 0 ? color2 : color3,

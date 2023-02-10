@@ -48,21 +48,17 @@ class CaptchaPage extends GetView<CaptchaLogic> {
               ),
             ),
             SizedBox(height: isLandscape ? 18 : 48),
-            Text(
-              '输入验证码'.tr,
-              style: const TextStyle(
-                fontSize: 24,
-                height: 1.16,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Text('输入验证码'.tr,
+                style: appThemeData.textTheme.bodyText1?.copyWith(
+                  fontSize: 24,
+                  height: 1.16,
+                  fontWeight: FontWeight.w600,
+                )),
             SizedBox(
               height: isLandscape ? 8 : 12,
             ),
             Text('验证码已发送至 +%s %s'.trArgs(["86", controller.mobile.toString()]),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText1
+                style: appThemeData.textTheme.bodyText1
                     ?.copyWith(height: 1.21, fontSize: isLandscape ? 12 : 14)),
             const SizedBox(
               height: 32,
@@ -118,15 +114,17 @@ class CaptchaPage extends GetView<CaptchaLogic> {
                                   },
                                   child: Text(
                                     '重新发送'.tr,
-                                    style: TextStyle(
-                                        color: appThemeData.primaryColor,
-                                        fontSize: 14),
+                                    style: appThemeData.textTheme.bodyText1
+                                        ?.copyWith(
+                                            color: appThemeData.primaryColor,
+                                            fontSize: 14),
                                   ),
                                 )
                               : Text('${controller.count} s',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: appThemeData.primaryColor)),
+                                  style: appThemeData.textTheme.bodyText1
+                                      ?.copyWith(
+                                          fontSize: 14,
+                                          color: appThemeData.primaryColor)),
                         );
                       }),
                 ],

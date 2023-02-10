@@ -115,6 +115,10 @@ flutter:
     - assets/json/
     - assets/json/child/
 
+  fonts:
+   - family: SourceHanSansCN
+     fonts:
+       - asset: assets/fonts/SourceHanSansCN/SourceHanSansCN-Normal.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

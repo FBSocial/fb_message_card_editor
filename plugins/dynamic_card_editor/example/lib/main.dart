@@ -473,7 +473,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(width: 2),
           Text(
             text ?? '',
-            style: TextStyle(color: Color(0xff686A6D), fontSize: 15),
+            style: textStyle1.copyWith(color: Color(0xff686A6D), fontSize: 15),
           )
         ],
       ),
