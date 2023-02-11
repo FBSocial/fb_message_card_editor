@@ -106,9 +106,9 @@ Future<String?> uploadFileIfNotExist(
         if (res.statusCode == 200) {
           return downloadUrl;
         } else {
-          logger.info("uploadFileIfNotExist ${res.statusMessage}");
+          logger.info("uploadFileIfNotExist ${res.statusMessage ?? ""}");
           throw "上传文件失败%s-%s"
-              .trArgs([res.statusCode.toString(), res.statusMessage!]);
+              .trArgs([res.statusCode.toString(), res.statusMessage ?? ""]);
         }
       } catch (error) {
         // 如果 cos 信息超时，重新获取最新的认证信息

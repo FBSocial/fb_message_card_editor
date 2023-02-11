@@ -280,6 +280,7 @@ class HomeView extends GetView<HomeController> {
             ]),
             const SizedBox(height: 10),
             Text('卡片预览', style: appThemeData.textTheme.titleMedium),
+            buildChinaText(),
             _dividerW(),
             Expanded(child: child)
           ],
@@ -636,7 +637,8 @@ class HomeView extends GetView<HomeController> {
                           onTap: () {
                             controller.saveIndex = -1;
                             controller.changgeRoot(snapshot.data!);
-                            RemoveOverlayNotifier.instance.emit(RemoveOverlayEvent(remove: true));
+                            RemoveOverlayNotifier.instance
+                                .emit(RemoveOverlayEvent(remove: true));
                           },
                           child: Container(
                             color: Colors.transparent,
@@ -675,7 +677,8 @@ class HomeView extends GetView<HomeController> {
                             controller.saveIndex =
                                 snapshot.data?.indexOf(e) ?? -1;
                             controller.changgeRoot(jsonDecode(e.file ?? ""));
-                            RemoveOverlayNotifier.instance.emit(RemoveOverlayEvent(remove: true));
+                            RemoveOverlayNotifier.instance
+                                .emit(RemoveOverlayEvent(remove: true));
                           },
                           child: Container(
                             color: Colors.transparent,
@@ -819,3 +822,14 @@ class HomeView extends GetView<HomeController> {
     return colors[index];
   }
 }
+
+Widget buildChinaText() => Container(
+      height: 1,
+      child: const Opacity(
+        opacity: 0,
+        child: Text(
+          '中文',
+          style: TextStyle(fontSize: 13),
+        ),
+      ),
+    );

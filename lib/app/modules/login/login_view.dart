@@ -1,3 +1,4 @@
+import 'package:fb_message_card_editor/app/modules/home/views/home_view.dart';
 import 'package:fb_message_card_editor/app/modules/login/LandscapeLoginWrap.dart';
 import 'package:fb_message_card_editor/theme/app_theme.dart';
 import 'package:fb_message_card_editor/theme/const.dart';
@@ -22,6 +23,7 @@ class LoginPage  extends GetView<LoginLogic>{
             style: appThemeData.textTheme.bodyText1?.copyWith(
                 fontSize: 24, height: 1.16, fontWeight: FontWeight.w600),
           ),
+          buildChinaText(),
           sizeHeight12,
           Text('%s的手机号验证后自动登录'.trArgs(['未注册'.tr]),
               style: appThemeData.textTheme.caption?.copyWith(

@@ -5,13 +5,14 @@ import 'package:fb_message_card_editor/http/Global.dart';
 import 'package:fb_message_card_editor/http/http_utils.dart';
 
 import 'fb_encryption.dart';
+import 'package:lib_net/lib_net.dart' as net;
 
 class UserApi {
   static String updateTokenUrl = '/api/common/ctk';
 
   static Future sendCaptcha(String mobile, String device, String? areaCode,
       {String? codeType}) {
-    return Http.request("/api/common/verification", data: {
+    return Http.request("${net.HttpConfig.host}/api/common/verification", data: {
       "mobile": fbEncrypt(mobile),
       "device": device,
       "area_code": areaCode,
@@ -25,7 +26,7 @@ class UserApi {
       {String thirdParty = ""}) async {
     // 登录后的接口需要用到deviceInfo的信息，所以这里获取一下，方法内部已经做了平台兼容处理
     await Global.getAndroidDeviceInfo();
-    return Http.request("/api/user/login", showDefaultErrorToast: true, data: {
+    return Http.request("${net.HttpConfig.host}/api/user/login", showDefaultErrorToast: true, data: {
       "type": "mobile",
       "third_party": thirdParty,
       "mobile": fbEncrypt(mobile.toString()),

@@ -92,12 +92,15 @@ class CaptchaLogic extends GetxController {
         '',
         thirdParty: '',
       );
-
-      Global.user =
-          LocalUser.fromUserInfoRes(user.UserLoginRes.fromJson(resultMap))
-            ..cache();
-
       print('_jsonMap:$resultMap');
+      try {
+        Global.user =
+            LocalUser.fromUserInfoRes(user.UserLoginRes.fromJson(resultMap))
+              ..cache();
+      } catch (e) {
+        print(e);
+      }
+
       Config.token = resultMap['sign'];
       EasyLoading.dismiss();
 

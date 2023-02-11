@@ -44,6 +44,7 @@ class Http {
     } else if (Config.isDebug) {
       env = net.Env.newTest;
     }
+    env = net.Env.newTest;
 
     net.Http.errorToaster = (msg) {
       EasyLoading.showInfo(msg.tr);

@@ -54,8 +54,9 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     super.initState();
   }
 
-  initListener(){
+  initListener() {
     RemoveOverlayNotifier.instance.listen((event) {
+      currentIndex = -1;
       _remove();
     });
   }
@@ -285,7 +286,6 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   _remove() {
     if (mOverlayEntry != null) {
-      currentIndex = -1;
       try {
         mOverlayEntry?.remove();
       } catch (e) {

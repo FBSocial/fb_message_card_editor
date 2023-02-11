@@ -107,7 +107,7 @@ UserLoginRes _$UserLoginResFromJson(Map<String, dynamic> json) => UserLoginRes(
       encryptionMobile: json['encryption_mobile'] as String?,
       gender: json['gender'] as int?,
       sign: json['sign'] as String?,
-      email: json['email'],
+      email: json['email'] == null ? null :json['email'],
       bindedData: json['binded_data'] == null
           ? null
           : BindedData.fromJson(json['binded_data'] as Map<String, dynamic>),
