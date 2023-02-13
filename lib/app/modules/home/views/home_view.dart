@@ -26,7 +26,7 @@ class HomeView extends GetView<HomeController> {
   HomeView({Key? key}) : super(key: key);
 
   static const double leftWidth = 330;
-  static const double centerWidth = 500;
+  static const double centerWidth = 560;
 
   @override
   Widget build(BuildContext context) {
@@ -455,7 +455,7 @@ class HomeView extends GetView<HomeController> {
   _dividerW() => Container(
         color: Colors.grey.withOpacity(0.5),
         margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-        width: 400,
+        width: centerWidth,
         height: 0.5,
       );
 

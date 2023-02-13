@@ -3,6 +3,7 @@ import 'package:dynamic_card/dynamic_card.dart';
 import 'package:dynamic_card/widgets/title/vote_title.dart';
 import 'package:fb_message_card_editor/app/modules/home/bindings/delete_notify.dart';
 import 'package:fb_message_card_editor/theme/app_theme.dart';
+import 'package:fb_message_card_editor/theme/const.dart';
 import 'package:fb_message_card_editor/util/mouse_hover_builder.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -201,10 +202,30 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                   }),
             );
 
+            Widget hWidget = Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  width: 20,
+                  child: currentIndex == index
+                      ? GestureDetector(
+                          onTap: () {},
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.redAccent,
+                            size: 20,
+                          ),
+                        )
+                      : Container(),
+                ),
+                sizeWidth8,
+                Expanded(child: mouse)
+              ],
+            );
             Widget ikey = Container(
               padding: const EdgeInsets.only(right: 40),
               key: ValueKey(columnChildren[index].hashCode),
-              child: mouse,
+              child: hWidget,
             );
             mouseChildren.add(ikey);
           }
@@ -318,7 +339,7 @@ class _DynamicWidgetState extends State<DynamicWidget> {
           //       child: _changeItem(index)),
         ]);
       });
-      Overlay.of(Get.context!)?.insert(mOverlayEntry!);
+      // Overlay.of(Get.context!)?.insert(mOverlayEntry!);
     }
   }
 
