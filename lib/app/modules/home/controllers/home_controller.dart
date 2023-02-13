@@ -241,7 +241,7 @@ class HomeController extends GetxController with GetTickerProviderStateMixin {
         showMap = dynamicWidgetContent?.toJson();
       }
     } catch (e) {
-      print(e);
+      print(" error: $e");
     } finally {
       EasyLoading.dismiss();
     }

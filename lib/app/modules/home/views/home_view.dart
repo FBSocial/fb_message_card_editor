@@ -132,9 +132,7 @@ class HomeView extends GetView<HomeController> {
                   ),
                 ),
               ));
-        }).then((val) {
-      print(val);
-    });
+        });
   }
 
   static final imageType = ["gif", "jpg", "jpeg", "png", "bmp", "webp"];
@@ -297,93 +295,86 @@ class HomeView extends GetView<HomeController> {
       bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
 
   _sendToGuildDialog() => showDialog<Null>(
-          context: Get.context!,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title:
-                    Text('发送到服务器', style: appThemeData.textTheme.titleMedium),
-                content: Container(
-                  color: Colors.white,
-                  width: 300,
-                  height: 440,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('发送到，1926服务器，卡片编辑器频道',
-                          style: appThemeData.textTheme.titleMedium),
-                      const SizedBox(height: 10),
-                      Image.asset(
-                        "${Config.ASSETS_IMG}invite.jpg",
-                        width: 240,
-                        height: 360,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          buildMaterialButton('取消', () {
-                            Navigator.pop(Get.context!);
-                          }),
-                          Expanded(child: Container()),
-                          buildMaterialButton('立即发送', () async {
-                            await controller.sendToGuild();
-                            Navigator.pop(context);
-                          },
-                              bgColor: const Color(0xFF198CFE),
-                              txtColor: Colors.white)
-                        ],
-                      )
-                    ],
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text('发送到服务器', style: appThemeData.textTheme.titleMedium),
+            content: Container(
+              color: Colors.white,
+              width: 300,
+              height: 440,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('发送到，1926服务器，卡片编辑器频道',
+                      style: appThemeData.textTheme.titleMedium),
+                  const SizedBox(height: 10),
+                  Image.asset(
+                    "${Config.ASSETS_IMG}invite.jpg",
+                    width: 240,
+                    height: 360,
                   ),
-                ));
-          }).then((val) {
-        print(val);
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      buildMaterialButton('取消', () {
+                        Navigator.pop(Get.context!);
+                      }),
+                      Expanded(child: Container()),
+                      buildMaterialButton('立即发送', () async {
+                        await controller.sendToGuild();
+                        Navigator.pop(context);
+                      },
+                          bgColor: const Color(0xFF198CFE),
+                          txtColor: Colors.white)
+                    ],
+                  )
+                ],
+              ),
+            ));
       });
 
   _sendToMeDialog() => showDialog<Null>(
-          context: Get.context!,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return AlertDialog(
-                title:
-                    Text('向我发送预览', style: appThemeData.textTheme.titleMedium),
-                content: Container(
-                  color: Colors.white,
-                  width: 300,
-                  height: 440,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('请先加入服务器',
-                          style: appThemeData.textTheme.titleMedium),
-                      const SizedBox(height: 10),
-                      Image.asset(
-                        "${Config.ASSETS_IMG}invite.jpg",
-                        width: 240,
-                        height: 360,
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          buildMaterialButton('取消', () {
-                            Navigator.pop(Get.context!);
-                          }),
-                          Expanded(child: Container()),
-                          buildMaterialButton('已经加入，立即发送', () async {
-                            await controller.sendToMe();
-                            Navigator.pop(context);
-                          },
-                              bgColor: const Color(0xFF198CFE),
-                              txtColor: Colors.white)
-                        ],
-                      )
-                    ],
+      context: Get.context!,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text('向我发送预览', style: appThemeData.textTheme.titleMedium),
+            content: Container(
+              color: Colors.white,
+              width: 300,
+              height: 440,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('请先加入服务器', style: appThemeData.textTheme.titleMedium),
+                  const SizedBox(height: 10),
+                  Image.asset(
+                    "${Config.ASSETS_IMG}invite.jpg",
+                    width: 240,
+                    height: 360,
                   ),
-                ));
-          }).then((val) {
-        print(val);
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      buildMaterialButton('取消', () {
+                        Navigator.pop(Get.context!);
+                      }),
+                      Expanded(child: Container()),
+                      buildMaterialButton('已经加入，立即发送', () async {
+                        await controller.sendToMe();
+                        Navigator.pop(context);
+                      },
+                          bgColor: const Color(0xFF198CFE),
+                          txtColor: Colors.white)
+                    ],
+                  )
+                ],
+              ),
+            ));
       });
 
   _logout() => buildMaterialButton('退出登录', () async {
@@ -425,9 +416,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                   ));
-            }).then((val) {
-          print(val);
-        });
+            });
       }, bgColor: const Color(0xFF198CFE), txtColor: Colors.white);
 
   MaterialButton buildMaterialButton(String text, VoidCallback onPress,
@@ -572,7 +561,7 @@ class HomeView extends GetView<HomeController> {
                   object: controller.showMap,
                   onValueChanged: (value) {
                     if (kDebugMode) {
-                      print(value);
+                      print("json :$value");
                     }
                     controller.updateShowMap(value);
                   },

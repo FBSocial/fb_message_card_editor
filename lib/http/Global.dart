@@ -175,7 +175,7 @@ class Global {
           await storage.write(
               key: saveDeviceIdKey, value: deviceInfo!.identifier);
         } catch (e) {
-          print(e);
+          print("write error $e");
         }
       }
     } else {
@@ -228,6 +228,7 @@ class LocalUser extends ChangeNotifier {
       'gender': gender
     };
   }
+
   static LocalUser fromUserInfo(Map res) {
     return LocalUser()
       ..id = res['user_id'] ?? ''
@@ -235,7 +236,7 @@ class LocalUser extends ChangeNotifier {
       ..username = res['username'] ?? ''
       ..avatar = res['avatar'] ?? ''
       ..token = res['sign']!
-      ..mobile = ascii.decode(base64.decode(res['encryption_mobile']??''))
+      ..mobile = ascii.decode(base64.decode(res['encryption_mobile'] ?? ''))
       ..gender = res['gender'];
   }
 

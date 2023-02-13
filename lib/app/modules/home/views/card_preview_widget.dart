@@ -57,7 +57,6 @@ class _DynamicWidgetState extends State<DynamicWidget> {
 
   initListener() {
     RemoveOverlayNotifier.instance.listen((event) {
-      currentIndex = -1;
       _remove();
     });
   }
@@ -103,7 +102,8 @@ class _DynamicWidgetState extends State<DynamicWidget> {
   }
 
   List<GlobalKey> itenGlobalKeyList = [];
-  OverlayEntry? mOverlayEntry;
+
+  // OverlayEntry? mOverlayEntry;
   int currentIndex = -1;
   bool currentIsImageWidget = false;
 
@@ -209,7 +209,12 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                   width: 20,
                   child: currentIndex == index
                       ? GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            _remove();
+                            if (widget.itemClick != null) {
+                              widget.itemClick!(OptType.remove, index, 0);
+                            }
+                          },
                           child: const Icon(
                             Icons.delete,
                             color: Colors.redAccent,
@@ -235,21 +240,25 @@ class _DynamicWidgetState extends State<DynamicWidget> {
             return ScrollConfiguration(
                 behavior:
                     ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: _scroll(ReorderableListView(
+                child: ReorderableListView(
                   buildDefaultDragHandles: true,
                   children: resultWidget.children!,
                   onReorder: (int oldIndex, int newIndex) {
                     if (oldIndex < newIndex) {
                       newIndex -= 1;
                     }
-                    currentIndex = -1;
-                    _remove();
+                    // _remove();
                     if (widget.itemClick != null) {
                       widget.itemClick!(OptType.replase, oldIndex, newIndex);
                     }
+                    if (currentIndex == oldIndex) {
+                      currentIndex = newIndex;
+                    } else if (currentIndex == newIndex) {
+                      currentIndex = oldIndex;
+                    }
                     setState(() {});
                   },
-                )));
+                ));
           }
         }
         if (needPadding) {
@@ -306,13 +315,14 @@ class _DynamicWidgetState extends State<DynamicWidget> {
   }
 
   _remove() {
-    if (mOverlayEntry != null) {
-      try {
-        mOverlayEntry?.remove();
-      } catch (e) {
-        print(e);
-      }
-    }
+    currentIndex = -1;
+    // if (mOverlayEntry != null) {
+    //   try {
+    //     mOverlayEntry?.remove();
+    //   } catch (e) {
+    //     print(" error: $e");
+    //   }
+    // }
   }
 
   _showOverlayEntry(int index, bool isImageWidget) {
@@ -322,23 +332,23 @@ class _DynamicWidgetState extends State<DynamicWidget> {
     });
     GlobalKey item = itenGlobalKeyList[index];
     if (item.currentContext != null) {
-      final RenderBox renderBox =
-          item.currentContext!.findRenderObject() as RenderBox;
-      Size size = renderBox.size;
-      Offset position = renderBox.localToGlobal(Offset.zero);
-      mOverlayEntry = OverlayEntry(builder: (context) {
-        return Stack(children: <Widget>[
-          Positioned(
-              top: position.dy - 40,
-              left: position.dx,
-              child: _deleteItem(index)),
-          // if (isImageWidget)
-          //   Positioned(
-          //       top: position.dy - 40,
-          //       left: position.dx + size.width - 40,
-          //       child: _changeItem(index)),
-        ]);
-      });
+      // final RenderBox renderBox =
+      //     item.currentContext!.findRenderObject() as RenderBox;
+      // Size size = renderBox.size;
+      // Offset position = renderBox.localToGlobal(Offset.zero);
+      // mOverlayEntry = OverlayEntry(builder: (context) {
+      //   return Stack(children: <Widget>[
+      //     Positioned(
+      //         top: position.dy - 40,
+      //         left: position.dx,
+      //         child: _deleteItem(index)),
+      //     // if (isImageWidget)
+      //     //   Positioned(
+      //     //       top: position.dy - 40,
+      //     //       left: position.dx + size.width - 40,
+      //     //       child: _changeItem(index)),
+      //   ]);
+      // });
       // Overlay.of(Get.context!)?.insert(mOverlayEntry!);
     }
   }

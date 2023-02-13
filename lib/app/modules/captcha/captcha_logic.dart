@@ -98,7 +98,7 @@ class CaptchaLogic extends GetxController {
             LocalUser.fromUserInfoRes(user.UserLoginRes.fromJson(resultMap))
               ..cache();
       } catch (e) {
-        print(e);
+        print(" error: $e");
       }
 
       Config.token = resultMap['sign'];
@@ -111,7 +111,7 @@ class CaptchaLogic extends GetxController {
       }
       Get.toNamed(Routes.HOME);
     } catch (e) {
-      print(e);
+      print(" error: $e");
     } finally {
       EasyLoading.dismiss();
     }
